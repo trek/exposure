@@ -1,12 +1,12 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "call chain finders", :type => :controller do   
+describe "finders", :type => :controller do   
   class PiratesController < ActionController::Base
     expose_many(:pirates)
-    find :pirates, :with => [ :active ]
-    find :pirate,  :with => [ :find_by_name, params[:id] ]
-    find :pirate,  :with => [ :find_by_name, params[:pirate][:name] ]
-    
+    private
+      def find_pirate
+        Pirate.find_by_title(params[:id])
+      end
   end 
   
   controller_name :pirates
@@ -18,21 +18,36 @@ describe "call chain finders", :type => :controller do
     ActionController::Routing::Routes.draw do |map| 
       map.resources :pirates
     end
+    
+    @pirate = Factory.stub(:pirate)
+    Pirate.stub(:find_by_title => @pirate)
   end
   
-  it "should use the custom collection finder" do
-    PiratesController.find(:pirates, :with => [:active])
-    Pirate.should_receive(:active).and_return([Factory.build(:pirate)])
-    get(:index)
+  after(:each) do
+    PiratesController::Finders.clear
   end
   
-  it "should use the custome member finder" do
-    Pirate.should_receive(:find_by_name).with('jack').and_return(Factory.build(:pirate))
-    get(:show, {:id => 'jack'})
+  it "finds with a method name as symbol" do
+    PiratesController.find :pirate, :with => Proc.new { Pirate.find_by_title(params[:id]) }
+    get(:show, {:id => 'Captain'})
+    
+    should assign_to(:pirate).with(@pirate)
   end
   
-  it "should use the custome member finder" do
-    Pirate.should_receive(:find_by_name).with('jack').and_return(Factory.build(:pirate))
-    get(:show, {:id => '1', :pirate => {:name => 'jack'}})
+  it "finds with a proc" do
+    PiratesController.find :pirate, :with => :find_pirate
+    get(:show, {:id => 'Captain'})
+    
+    should assign_to(:pirate).with(@pirate)    
+  end
+  
+  it "finds with a block" do
+    PiratesController.find :pirate do
+      Pirate.find_by_title(params[:id])
+    end
+    
+    get(:show, {:id => 'Captain'})
+    
+    should assign_to(:pirate).with(@pirate)    
   end
 end

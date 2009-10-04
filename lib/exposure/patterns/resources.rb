@@ -4,9 +4,13 @@ module Exposure
       def self.extended(base)
         base::const_set(:DefaultResponses, DefaultResponses)
         base::const_set(:DefaultFlashMessages, DefaultFlashMessages)
+        # base::const_set(:DefaultFinders, {
+        #   base.resource_name.intern  => Proc.new {|parent,controller| parent.find(controller.params[:id])},
+        #   base.resources_name.intern => Proc.new {|parent,controller| parent.all }
+        # })
         base::const_set(:DefaultFinders, {
-          base.resource_name.intern => Proc.new {|parent,controller| parent.find(controller.params[:id])},
-          base.resources_name.intern => Proc.new {|parent,controller| parent.all }
+          base.resource_name.intern  => Proc.new { parent_object.find(params[:id]) },
+          base.resources_name.intern => Proc.new { parent_object.all }
         })
         base::const_set(:Finders, { true => {}, false => {} })
         base::const_set(:FlashMessages, { true => {}, false => {} })
@@ -214,6 +218,10 @@ module Exposure
               case flash_message
               when String
                 flash[:message] = flash_message
+              when Symbol
+                flash[:message] = self.send(flash_message)
+              when Proc
+                flash[:message] = self.instance_eval(&flash_message)
               end
             else
               false
@@ -234,19 +242,31 @@ module Exposure
             if finder = self.class::Finders[resource_name]
               case finder
               when Array
-                parent_object.send(*(finder.collect! {|part| part.respond_to?(:call) ? part.call(self) : part }))
+                raise "unimplemented"
+                # parent_object.send(*(finder.collect! {|part| part.respond_to?(:call) ? part.call(self) : part }))
+              when Symbol
+                self.send(finder)
+              when Proc
+                self.instance_eval(&finder)
               end
             end
           end
           
           def default_finder_for(resource_name)
-            if finder_proc = self.class::DefaultFinders[resource_name]
-              finder_proc.call(parent_object, self)
+            if finder = self.class::DefaultFinders[resource_name]
+              self.instance_eval(&finder)
+              # finder_proc.call(parent_object, self)
             end
           end
           
           def finder_for(resource_name)
             custom_finder_for(resource_name) || default_finder_for(resource_name)
+          end
+          
+          def finder_chain_call(origin, messages)
+            message = messages.shift
+            return object unless message
+            recursive_call(object.send(*message), messages)
           end
           
           def builder_for(resource_name)

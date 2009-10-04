@@ -16,6 +16,16 @@ module Exposure
       @resources_name = name
     end
     
+    # options
+    # :nested => false or symbol or array of symbols
+    #   defaults to false
+    # :only   => array of REST methods names as symbols to only include
+    #   defaults to [:show, :new, :create, :edit, :update, :destroy]
+    # :except => array of REST methods to exclude
+    #   defaults to [ ]
+    # :formats => array of 
+    #   defaults to [ :html, :xml, :json ]
+    #
     def expose_one(resource_name, options = {})
       include ActiveSupport::Callbacks      
       extend Exposure::Common
@@ -27,6 +37,16 @@ module Exposure
       define_callbacks(*Patterns::Resource::Callbacks)
     end
     
+    # options
+    # :nested => false or symbol or array of symbols
+    #   defaults to false
+    # :only   => array of REST methods names as symbols to only include
+    #   defaults to [:index, :show, :new, :create, :edit, :update, :destroy]
+    # :except => array of REST methods to exclude
+    #   defaults to [ ]
+    # :formats => array of 
+    #   defaults to [ :html, :xml, :json ]
+    # 
     def expose_many(name, options = {})
       include ActiveSupport::Callbacks      
       self.resource_name  = name.to_s.singularize
@@ -37,26 +57,6 @@ module Exposure
       include Patterns::Resources::Actions
       
       define_callbacks(*Patterns::Resources::Callbacks)
-      
     end
-    
-    # def expose(resource_name, options = {})
-    #   include ActiveSupport::Callbacks      
-    #   extend Exposure::Common
-    #   
-    #   self.resource_name = resource_name
-    #   
-    #   extend  Patterns::Resources
-    #   include Patterns::Resources::Actions
-    #   
-    #   define_callbacks(*Patterns::Resources::Callbacks)
-    #   
-    # end
-    
-    # def include_and_extend
-    #   extend  Patterns::Resources
-    #   include Patterns::Resources::Actions
-    # end
-    
   end
 end

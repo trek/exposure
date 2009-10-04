@@ -1,40 +1,5 @@
 module Exposure
-  module Common
-    # class ParameterAccess
-    #   def initialize(&block)
-    #     @block = block
-    #   end
-    #   
-    #   def call(args)
-    #     puts "gonna call"
-    #     @block.call(args)
-    #   end
-    #   
-    #   def store
-    #     @store ||= {}
-    #   end
-    #   
-    #   def [](key)
-    #     store[key] =  ParameterAccess.new { |controller| controller.params[key] }
-    #     # store[key] = Proc.new { |controller| controller.params[key] }
-    #   end
-    # end
-    
-    # find :pirate, :with => [ :find, :all]
-    # find :pirate, :with => [ :find ]
-    # find :pirate, :with => [ :find_by_name, params[:pirate][:name] ]
-    # find :pirate, :with => [:pirate_by_name]
-    # 
-    # find :person, :with => Proc.new { Person.find_by_permalink(params[:permalink]) }
-    # find :people, :with => Proc.new { Person.send(params[:scope]) }
-    # find :dogs, :with => :dogs_adopted_after_date
-    # valid options are
-    #   :with
-    #   :only
-    #   :except
-    #   :if
-    #   :unless
-    
+  module Common    
     def respond_to(action_name, options = {}, &block)
       options[:with] ||= block
       
@@ -49,11 +14,19 @@ module Exposure
       end
     end
     
-    # def params
-    #   @params ||= ParameterAccess.new
+    # find :person, :with => Proc.new { Person.find_by_permalink(params[:permalink]) }
+    # find :people, :with => Proc.new { Person.send(params[:scope]) }
+    # find :dogs, :with => :dogs_adopted_after_date
+    # find :dogs do
+    #   Dog.all
     # end
-    
-    def find(name, options = {})
+    # 
+    # valid options are
+    #   :with
+    #   :only
+    #   :except
+    def find(name, options = {}, &block)
+      options[:with] ||= block
       self.const_get(:Finders)[name] = options[:with]
     end
     
@@ -83,7 +56,7 @@ module Exposure
     end
     
     # builds callbacks that adhere to the ActiveSupport::Callbacks interface
-    def build_callback(prefix, trigger, action, options)
+    def build_callback(prefix, trigger, action, options) #:nodoc:
       callback_name = "#{prefix}_#{trigger}"
       
       if options[:on]

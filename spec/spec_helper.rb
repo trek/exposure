@@ -57,7 +57,7 @@ ActiveRecord::Schema.define(:version => 1) do
 end
 
 class Pirate < ActiveRecord::Base
-  has_one :ship
+  has_many :ships
   validates_length_of :title, :within => 2..100
   def validate
   end
@@ -68,18 +68,4 @@ class Ship < ActiveRecord::Base
   def validate
   end
   validates_associated :pirate
-end
-# class Comment < ActiveRecord::Base
-#   belongs_to :post
-#   def validate
-#   end
-#   validates_associated :post
-# end
-# 
-# class Widget < ActiveRecord::Base
-#   def validate
-#   end
-# end
-
-class PostsController < ActionController::Base
 end
