@@ -22,26 +22,26 @@ module Exposure
       
       DefaultFlashMessages = {
         true => {
-          :create => Proc.new {|c| "#{c.send(:resource_name).capitalize} successfully created" },
-          :update => Proc.new {|c| "#{c.send(:resource_name).capitalize} successfully updated" },
-          :destroy => Proc.new {|c| "#{c.send(:resource_name).capitalize} successfully removed" }
+          :create => Proc.new { "#{resource_name.capitalize} successfully created" },
+          :update => Proc.new { "#{resource_name.capitalize} successfully updated" },
+          :destroy => Proc.new { "#{resource_name.capitalize} successfully removed" }
         },
         false => {}
       }
       
       DefaultResponses = {
         true =>  {
-          :index => Proc.new   {|c| c.send(:render,'index')        },
-          :show  => Proc.new   {|c| c.send(:render, 'show')        },
-          :new   => Proc.new   {|c| c.send(:render, 'new')         },
-          :create => Proc.new  {|c| c.send(:redirect_to, {:action => 'index'})  },
-          :edit   => Proc.new  {|c| c.send(:render, 'edit')        },
-          :update => Proc.new  {|c| c.send(:redirect_to, {:action => 'show' })   },
-          :destroy => Proc.new {|c| c.send(:redirect_to, {:action => 'index'}) }
+          :index => Proc.new   { render('index')        },
+          :show  => Proc.new   { render('show')        },
+          :new   => Proc.new   { render('new')         },
+          :create => Proc.new  { redirect_to({:action => 'index'})  },
+          :edit   => Proc.new  { render('edit')        },
+          :update => Proc.new  { redirect_to({:action => 'show' })   },
+          :destroy => Proc.new { redirect_to({:action => 'index'}) }
         },
         false => {
-          :create => Proc.new {|c| c.send(:render, 'new')    },
-          :update => Proc.new {|c| c.send(:render, 'edit')   }
+          :create => Proc.new { render('new')    },
+          :update => Proc.new { render('edit')   }
         }
       }
 
@@ -226,7 +226,7 @@ module Exposure
           
           def default_flash_for(action_name, action_successful)
             if message_proc = self.class::DefaultFlashMessages[action_successful][action_name]
-              flash[:message] = message_proc.call(self)
+              flash[:message] = self.instance_eval(&message_proc)
             end
           end
           
