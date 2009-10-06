@@ -1,12 +1,5 @@
 module Exposure
   module Configuration
-    class <<
-      attr_accessor :resource_name, :resources_name, 
-                    :resource_chain, :resources_chain, 
-                    :collection_nesting, :member_nesting,
-                    :parent_model
-    end
-    
     # options
     # :nested => false or symbol or array of symbols
     #   defaults to false
@@ -17,19 +10,6 @@ module Exposure
     # :formats => array of 
     #   defaults to [ :html, :xml, :json ]
     #
-    
-    
-    def build_default_finders(member, nesting)
-      finders = self::const_set(:DefaultFinders, {
-        self.resource_name.intern  => Proc.new { [:find, params[:id] ] },
-        self.resources_name.intern => Proc.new { [:all] }
-      })
-      
-      nesting.each do |association_name|
-        finders[association_name.to_s.singularize.to_sym] = Proc.new { [:find, params[:"#{association_name.to_s.singularize}_id"]] }
-        finders[association_name] = Proc.new { [ :all ] }
-      end
-    end
     
     def expose_one(resource_name, options = {})
       include ActiveSupport::Callbacks      
@@ -54,7 +34,9 @@ module Exposure
     #   defaults to [ :html, :xml, :json ]
     # 
     def expose_many(name, options = {})
-      include ActiveSupport::Callbacks      
+      include ActiveSupport::Callbacks
+      extend Exposure::Common
+      
       self.resource_name  = name.to_s.singularize
       self.resources_name = name.to_s
       
@@ -74,7 +56,6 @@ module Exposure
         self.collection_nesting = [ [self.resources_name.to_sym] ]
       end
       
-      extend Exposure::Common
       extend  Patterns::Resources
       include Patterns::Resources::Actions
       

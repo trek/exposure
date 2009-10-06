@@ -25,7 +25,7 @@ describe "responders", :type => :controller do
   
   describe "responding with a method call" do
     before(:each) do
-      PiratesController.respond_to :create do
+      PiratesController.response_for :create do
         redirect_to({:action => 'test'})
       end
     end
@@ -45,7 +45,7 @@ describe "responders", :type => :controller do
   
   describe "responding with a method call :on => :success" do
     before(:each) do
-       PiratesController.respond_to :create, :on => :success do
+       PiratesController.response_for :create, :on => :success do
          redirect_to({:action => 'test'})
        end
      end
@@ -65,7 +65,7 @@ describe "responders", :type => :controller do
   
   describe "responding with a method call :on => :failure" do
       before(:each) do
-        PiratesController.respond_to :create, :on => :failure do
+        PiratesController.response_for :create, :on => :failure do
            redirect_to({:action => 'test'})
          end
       end

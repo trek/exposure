@@ -26,7 +26,7 @@ describe "responders", :type => :controller do
   
   describe "responding with a method call" do
     before(:each) do
-      PiratesController.respond_to :create, :with => @response_proc
+      PiratesController.response_for :create, :is => @response_proc
     end
     
     it "should respond with redirect to test on success" do
@@ -44,7 +44,7 @@ describe "responders", :type => :controller do
   
   describe "responding with a method call :on => :success" do
     before(:each) do
-       PiratesController.respond_to :create, :with => @response_proc, :on => :success
+       PiratesController.response_for :create, :is => @response_proc, :on => :success
      end
 
     it "should respond with custom response on success" do
@@ -62,7 +62,7 @@ describe "responders", :type => :controller do
   
   describe "responding with a method call :on => :failure" do
       before(:each) do
-        PiratesController.respond_to :create, :with => @response_proc, :on => :failure
+        PiratesController.response_for :create, :is => @response_proc, :on => :failure
       end
 
       it "should not respond with custom response  on success" do

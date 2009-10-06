@@ -1,16 +1,24 @@
 module Exposure
-  module Common    
-    def respond_to(action_name, options = {}, &block)
-      options[:with] ||= block
+  module Common
+    class <<
+      attr_accessor :resource_name, :resources_name, 
+                    :resource_chain, :resources_chain, 
+                    :collection_nesting, :member_nesting,
+                    :parent_model
+    end
+    
+    # respond_to :create, :on => :success,
+    def response_for(action_name, options = {}, &block)
+      options[:is] ||= block
       
       case options[:on]
       when NilClass
-        self.const_get(:Responses)[true][action_name]  = options[:with]
-        self.const_get(:Responses)[false][action_name] = options[:with]
+        self.const_get(:Responses)[true][action_name]  = options[:is]
+        self.const_get(:Responses)[false][action_name] = options[:is]
       when :success
-        self.const_get(:Responses)[true][action_name]  = options[:with]
+        self.const_get(:Responses)[true][action_name]  = options[:is]
       when :failure
-        self.const_get(:Responses)[false][action_name] = options[:with]
+        self.const_get(:Responses)[false][action_name] = options[:is]
       end
     end
     
@@ -53,6 +61,19 @@ module Exposure
     # access point for creating and configuring before_ callbacks.
     def after(trigger, action, options = {})
       build_callback('after', trigger, action, options)
+    end
+    
+    # builds default finders
+    def build_default_finders(member, nesting) #:nodoc:
+      finders = self::const_set(:DefaultFinders, {
+        self.resource_name.intern  => Proc.new { [:find, params[:id] ] },
+        self.resources_name.intern => Proc.new { [:all] }
+      })
+      
+      nesting.each do |association_name|
+        finders[association_name.to_s.singularize.to_sym] = Proc.new { [:find, params[:"#{association_name.to_s.singularize}_id"]] }
+        finders[association_name] = Proc.new { [ :all ] }
+      end
     end
     
     # builds callbacks that adhere to the ActiveSupport::Callbacks interface
