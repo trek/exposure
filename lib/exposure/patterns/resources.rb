@@ -4,14 +4,6 @@ module Exposure
       def self.extended(base)
         base::const_set(:DefaultResponses, DefaultResponses)
         base::const_set(:DefaultFlashMessages, DefaultFlashMessages)
-        # base::const_set(:DefaultFinders, {
-        #   base.resource_name.intern  => Proc.new {|parent,controller| parent.find(controller.params[:id])},
-        #   base.resources_name.intern => Proc.new {|parent,controller| parent.all }
-        # })
-        base::const_set(:DefaultFinders, {
-          base.resource_name.intern  => Proc.new { parent_object.find(params[:id]) },
-          base.resources_name.intern => Proc.new { parent_object.all }
-        })
         base::const_set(:Finders, { true => {}, false => {} })
         base::const_set(:FlashMessages, { true => {}, false => {} })
         base::const_set(:Responses, { true => {}, false => {} } )
@@ -206,7 +198,11 @@ module Exposure
           end
 
           def default_response_for(action_name, action_successful)
-            self.class::DefaultResponses[action_successful][action_name].call(self)
+            if finder = self.class::DefaultResponses[action_successful][action_name]
+               self.instance_eval &finder
+            else
+              return false
+            end
           end
 
           def response_for(action_name, action_successful)
@@ -240,22 +236,13 @@ module Exposure
           
           def custom_finder_for(resource_name)
             if finder = self.class::Finders[resource_name]
-              case finder
-              when Array
-                raise "unimplemented"
-                # parent_object.send(*(finder.collect! {|part| part.respond_to?(:call) ? part.call(self) : part }))
-              when Symbol
-                self.send(finder)
-              when Proc
-                self.instance_eval(&finder)
-              end
+              return finder
             end
           end
           
           def default_finder_for(resource_name)
             if finder = self.class::DefaultFinders[resource_name]
-              self.instance_eval(&finder)
-              # finder_proc.call(parent_object, self)
+              return finder
             end
           end
           
@@ -263,10 +250,31 @@ module Exposure
             custom_finder_for(resource_name) || default_finder_for(resource_name)
           end
           
-          def finder_chain_call(origin, messages)
-            message = messages.shift
-            return object unless message
-            recursive_call(object.send(*message), messages)
+          def call_finder_chain(object, chain, use_associaiton = true)
+            links = chain.shift
+            return object unless links
+
+            message = finder_for(links[0])
+            association = links[1] if use_associaiton
+
+            case message
+            when Symbol
+              value = self.send(message)
+            when Proc
+              value = self.instance_eval(&message)
+            else
+              raise "invalid finder of #{message.inspect}"
+            end
+
+            if value.kind_of?(Array) && !value.respond_to?(:proxy_target)
+              if use_associaiton
+                call_finder_chain(object.send(association).send(*value), chain)
+              else
+                call_finder_chain(object.send(*value), chain)
+              end
+            else
+              call_finder_chain(value, chain)
+            end
           end
           
           def builder_for(resource_name)
@@ -289,20 +297,16 @@ module Exposure
             @resource.update_attributes(params[resource_name])
           end
           
-          def parent_object
-            @parent_object ||= resource_name.camelize.constantize
-          end
-          
           def new_record
-            @resource = instance_variable_set("@#{resource_name}", parent_object.new(params[resource_name]))
+            @resource = instance_variable_set("@#{resource_name}", self.class.parent_model.new(params[resource_name]))
           end
           
           def find_record
-            @resource = instance_variable_set("@#{resource_name}", finder_for(resource_name.intern))
+            @resource = instance_variable_set("@#{resource_name}", call_finder_chain(self.class.parent_model, self.class.member_nesting.clone, false))
           end
           
-          def find_records
-            @resources = instance_variable_set("@#{resources_name}", finder_for(resources_name.intern))
+          def find_records            
+            @resources = instance_variable_set("@#{resources_name}", call_finder_chain(self.class.parent_model, self.class.collection_nesting.clone, false))
           end
           
           def delete_record

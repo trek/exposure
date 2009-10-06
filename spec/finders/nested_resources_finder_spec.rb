@@ -1,18 +1,14 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "nested finders", :type => :controller do   
-  class PirateShipsController < ActionController::Base
-    expose_many(:ships, :nested => :pirate)
-    private
-      def find_pirate
-        Pirate.find_by_title(params[:id])
-      end
+  class ShipsController < ActionController::Base
+    expose_many(:ships, :nested => [:pirates])
   end 
   
-  controller_name :pirate_ships
+  controller_name :ships
 
   before(:each) do
-    @controller = PirateShipsController.new
+    @controller = ShipsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     ActionController::Routing::Routes.draw do |map| 
@@ -21,10 +17,13 @@ describe "nested finders", :type => :controller do
       end
     end
     
-    @ship   = Factory.stub(:ship)
-    @pirate = Factory.stub(:pirate, {:ships => []})
-    Pirate.stub(:find_by_title => @pirate)
+    @pirate = Factory.create(:pirate_with_ships)
+    Pirate.stub(:find => @pirate)
+    
+    get(:index, {:pirate_id => 1})
   end
   
-  it { should assign_to(:ship).with(@ship) }
+  it { should assign_to(:ships) }
+  it { should assign_to(:resources) }
+  
 end
