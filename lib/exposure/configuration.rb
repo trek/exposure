@@ -9,8 +9,6 @@ module Exposure
     #   defaults to [ ]
     # :formats => array of 
     #   defaults to [ :html, :xml, :json ]
-    #
-    
     def expose_one(resource_name, options = {})
       include ActiveSupport::Callbacks      
       extend Exposure::Common

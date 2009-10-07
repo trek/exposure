@@ -6,7 +6,7 @@ module Exposure
         base::const_set(:DefaultFlashMessages, DefaultFlashMessages)
         base::const_set(:Finders, { true => {}, false => {} })
         base::const_set(:FlashMessages, { true => {}, false => {} })
-        base::const_set(:Responses, { true => {}, false => {} } )
+        base::const_set(:Responses, {} )
       end
       
       Callbacks = %w(
@@ -22,27 +22,31 @@ module Exposure
       
       DefaultFlashMessages = {
         true => {
-          :create => Proc.new { "#{resource_name.capitalize} successfully created" },
-          :update => Proc.new { "#{resource_name.capitalize} successfully updated" },
+          :create =>  Proc.new { "#{resource_name.capitalize} successfully created" },
+          :update =>  Proc.new { "#{resource_name.capitalize} successfully updated" },
           :destroy => Proc.new { "#{resource_name.capitalize} successfully removed" }
         },
         false => {}
       }
       
       DefaultResponses = {
-        true =>  {
-          :index => Proc.new   { render('index')        },
-          :show  => Proc.new   { render('show')        },
-          :new   => Proc.new   { render('new')         },
-          :create => Proc.new  { redirect_to({:action => 'index'})  },
-          :edit   => Proc.new  { render('edit')        },
-          :update => Proc.new  { redirect_to({:action => 'show' })   },
-          :destroy => Proc.new { redirect_to({:action => 'index'}) }
-        },
-        false => {
-          :create => Proc.new { render('new')    },
-          :update => Proc.new { render('edit')   }
-        }
+        'index.success.html'  => Proc.new   { render('index') },
+        'show.success.html'   => Proc.new   { render('show')  },
+        'new.success.html'    => Proc.new   { render('new')   },
+        'create.success.html' => Proc.new  { redirect_to({:action => 'index'}) },
+        'edit.success.html'   => Proc.new  { render('edit')  },
+        'update.success.html' => Proc.new  { redirect_to({:action => 'show' }) },
+        'destroy.success.html'=> Proc.new { redirect_to({:action => 'index'}) },
+        'create.failure.html' => Proc.new { render('new')    },
+        'update.failure.html' => Proc.new { render('edit')   },
+        'index.success.xml'   => Proc.new { render(:xml => @resources) },
+        'show.success.xml'   => Proc.new  { render(:xml => @resource) },
+        'new.success.xml'    => Proc.new  { render(:xml => @resource) },
+        'create.success.xml' => Proc.new  { render({:xml => @resource, :status => :created, :location => @resource}) },
+        'created.failure.xml'=> Proc.new  { render(:xml => @resource.errors, :status => :unprocessable_entity)},
+        'update.success.xml' => Proc.new  { head(:ok)},
+        'update.failure.xml' => Proc.new  { render(:xml => @resource.errors, :status => :unprocessable_entity)},
+        'destroy.success.xml'=> Proc.new  { head(:ok)}
       }
 
       module Actions
@@ -53,13 +57,13 @@ module Exposure
              run_callbacks(:after_find_many)
              run_callbacks(:before_response)
              run_callbacks(:before_response_on_success)
-             response_for(:index, true)
+             response_for(:index, :success, request.format.to_sym)
            else
              run_callbacks(:after_find_many_on_failure)
              run_callbacks(:after_find_many)
              run_callbacks(:before_response)
              run_callbacks(:before_response_on_failure)
-             response_for(:index, false)
+             response_for(:index, :failure, request.format.to_sym)
           end
         end
         
@@ -70,13 +74,13 @@ module Exposure
             run_callbacks(:after_find)
             run_callbacks(:before_response)
             run_callbacks(:before_response_on_success)
-            response_for(:show, true)
+            response_for(:show, :success, request.format.to_sym)
           else
             run_callbacks(:after_find_on_failure)
             run_callbacks(:after_find)
             run_callbacks(:before_response)
             run_callbacks(:before_response_on_failure)
-            response_for(:show, false)
+            response_for(:show, :failure, request.format.to_sym)
           end
         end
         
@@ -86,7 +90,7 @@ module Exposure
           run_callbacks(:after_assign)
           run_callbacks(:before_response)
           run_callbacks(:before_response_on_success)
-          response_for(:new, true)
+          response_for(:new, :success, request.format.to_sym)
         end
         
         def create
@@ -103,14 +107,14 @@ module Exposure
             run_callbacks(:before_response)
             run_callbacks(:before_response_on_success)
             flash_for(:create, true)
-            response_for(:create, true)
+            response_for(:create, :success, request.format.to_sym)
           else
             run_callbacks(:after_save_on_failure)
             run_callbacks(:after_create_on_failure)
             run_callbacks(:before_response)
             run_callbacks(:before_response_on_failure)
             flash_for(:create, false)
-            response_for(:create, false)
+            response_for(:create, :failure, request.format.to_sym)
           end
           
         end
@@ -122,13 +126,13 @@ module Exposure
             run_callbacks(:after_find)
             run_callbacks(:before_response)
             run_callbacks(:before_response_on_success)
-            response_for(:edit, true)
+            response_for(:edit, :success, request.format.to_sym)
           else
             run_callbacks(:after_find_on_failure)
             run_callbacks(:after_find)
             run_callbacks(:before_response)
             run_callbacks(:before_response_on_failure)
-            response_for(:edit, false)
+            response_for(:edit, :failure, request.format.to_sym)
           end
         end
         
@@ -143,21 +147,21 @@ module Exposure
               run_callbacks(:before_response)
               run_callbacks(:before_response_on_success)
               flash_for(:update, true)
-              response_for(:update, true)
+              response_for(:update, :success, request.format.to_sym)
             else
               run_callbacks(:after_save_on_failure)
               run_callbacks(:after_create_on_failure)
               run_callbacks(:before_response)
               run_callbacks(:before_response_on_failure)
               flash_for(:update, false)
-              response_for(:update, false)
+              response_for(:update, :failure, request.format.to_sym)
             end
           else
             run_callbacks(:after_find_on_failure)
             run_callbacks(:after_find)
             run_callbacks(:before_response)
             run_callbacks(:before_response_on_failure)
-            response_for(:edit, false)
+            response_for(:edit, :failure, request.format.to_sym)
           end
         end
         
@@ -174,39 +178,40 @@ module Exposure
             run_callbacks(:before_response)
             run_callbacks(:before_response_on_success)
             flash_for(:destroy, true)
-            response_for(:destroy, true)
+            response_for(:destroy, :success, request.format.to_sym)
 
           else
             run_callbacks(:after_find_on_failure)
             run_callbacks(:after_find)
-            response_for(:destroy, false)
+            response_for(:destroy, :failure, request.format.to_sym)
           end
         end
         
         private
-          def custom_response_for(action_name, action_successful)
-            if finder = self.class::Responses[action_successful][action_name]
-              case finder
+          def custom_response_for(action_name, action_status, format)
+            if responder = self.class::Responses["#{action_name}.#{action_status}.#{format}"]
+              case responder
               when Symbol
-                self.send(finder)
+                self.send(responder)
               when Proc
-                self.instance_eval &finder
+                self.instance_eval &responder
               end
             else
               false
             end
           end
 
-          def default_response_for(action_name, action_successful)
-            if finder = self.class::DefaultResponses[action_successful][action_name]
-               self.instance_eval &finder
+          def default_response_for(action_name, action_status, format)
+            if responder = self.class::DefaultResponses["#{action_name}.#{action_status}.#{format}"]
+              self.instance_eval &responder
             else
               return false
             end
           end
 
-          def response_for(action_name, action_successful)
-            custom_response_for(action_name, action_successful) || default_response_for(action_name, action_successful)
+          def response_for(action_name, action_status, format = :html)
+            format = :html if format == :all
+            custom_response_for(action_name, action_status, format) || default_response_for(action_name, action_status, format) || head(:not_acceptable)
           end
           
           def custom_flash_for(action_name, action_successful)

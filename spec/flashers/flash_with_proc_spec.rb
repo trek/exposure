@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "responders", :type => :controller do   
+describe "flash messages with procs", :type => :controller do   
   class PiratesController < ActionController::Base
     expose_many(:pirates)
   end 
@@ -29,7 +29,7 @@ describe "responders", :type => :controller do
   
   describe "responding with a method call" do
     before(:each) do
-      PiratesController.flash_for :create, :with => @proc
+      PiratesController.flash_for :create, :is => @proc
     end
     
     it "should respond with redirect to test on success" do
@@ -47,7 +47,7 @@ describe "responders", :type => :controller do
   
   describe "responding with a method call :on => :success" do
     before(:each) do
-       PiratesController.flash_for :create, :with => @proc, :on => :success
+       PiratesController.flash_for :create, :is => @proc, :on => :success
      end
 
     it "should respond with custom response on success" do
@@ -65,7 +65,7 @@ describe "responders", :type => :controller do
   
   describe "responding with a method call :on => :failure" do
       before(:each) do
-        PiratesController.flash_for :create, :with => @proc, :on => :failure
+        PiratesController.flash_for :create, :is => @proc, :on => :failure
       end
 
       it "should not respond with custom response  on success" do

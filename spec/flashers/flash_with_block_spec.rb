@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "flash with block", :type => :controller do   
+describe "flash messages with blocks", :type => :controller do   
   class PiratesController < ActionController::Base
     expose_many(:pirates)
     PiratesController.flash_for :create do

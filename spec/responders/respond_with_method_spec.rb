@@ -25,8 +25,7 @@ describe "responders", :type => :controller do
   end
   
   after(:each) do
-    PiratesController::Responses[true].clear
-    PiratesController::Responses[false].clear
+    PiratesController::Responses.clear
   end
   
   describe "responding with a method call" do

@@ -7,18 +7,34 @@ module Exposure
                     :parent_model
     end
     
-    # respond_to :create, :on => :success,
+    # response_for :create, :on => :success, :is => { proc }
+    # response_for :show, :formats => [:html] do
+    #   @resource.activated ? render('show') : render('next_steps')
+    # end
+    # response_for :new, :is => :new_foo_built
+    #
+    # valid action names are 
+    #   :index :show :new :create :edit :update :destroy
+    # valid options are
+    #   :on (optional)
+    #     :success, :failure, :any
+    #     default is :any
+    #   :is (option if block given)
+    #     can be a Proc or method name as symbol.
+    #   :formats
+    #     array of formats as symbols.
+    #     defaults to [:html]
     def response_for(action_name, options = {}, &block)
       options[:is] ||= block
-      
+      options[:formats] ||= [:html]
       case options[:on]
-      when NilClass
-        self.const_get(:Responses)[true][action_name]  = options[:is]
-        self.const_get(:Responses)[false][action_name] = options[:is]
+      when NilClass, :any
+        self.const_get(:Responses)["#{action_name}.success.html"] = options[:is]
+        self.const_get(:Responses)["#{action_name}.failure.html"] = options[:is]
       when :success
-        self.const_get(:Responses)[true][action_name]  = options[:is]
+        self.const_get(:Responses)["#{action_name}.success.html"] = options[:is]
       when :failure
-        self.const_get(:Responses)[false][action_name] = options[:is]
+        self.const_get(:Responses)["#{action_name}.failure.html"] = options[:is]
       end
     end
     
@@ -31,25 +47,33 @@ module Exposure
     # 
     # valid options are
     #   :with
-    #   :only
-    #   :except
+    #   :only (unimplemented)
+    #   :except (unimplemented)
     def find(name, options = {}, &block)
       options[:with] ||= block
       self.const_get(:Finders)[name] = options[:with]
     end
     
     # configure flash messages
+    # valid action names are 
+    #   :index :show :new :create :edit :update :destroy
+    # valid options are
+    #   :on (optional)
+    #     :success, :failure, :any
+    #     default is :any
+    #   :is (optional if block given)
+    #     can be a Proc or method name as symbol.
     def flash_for(action_name, options = {}, &block)
-      options[:with] ||= block
+      options[:is] ||= block
       
       case options[:on]
-      when NilClass
-        self.const_get(:FlashMessages)[true][action_name]  = options[:with]
-        self.const_get(:FlashMessages)[false][action_name] = options[:with]
+      when NilClass, :any
+        self.const_get(:FlashMessages)[true][action_name]  = options[:is]
+        self.const_get(:FlashMessages)[false][action_name] = options[:is]
       when :success
-        self.const_get(:FlashMessages)[true][action_name]  = options[:with]
+        self.const_get(:FlashMessages)[true][action_name]  = options[:is]
       when :failure
-        self.const_get(:FlashMessages)[false][action_name] = options[:with]
+        self.const_get(:FlashMessages)[false][action_name] = options[:is]
       end
     end
     
