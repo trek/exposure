@@ -1,17 +1,23 @@
-= exposure
+exposure
+======
 
-== REQUIREMENTS:
+REQUIREMENTS:
+======
 
 
-== INSTALL:
+INSTALL:
+=======
+    
+    gem sources -a http://gems.github.com (you only have to do this once)
+    sudo gem install trek-exposure
 
-sudo gem install trek-exposure
 
-== LICENSE:
+LICENSE:
+=========
 
 (The MIT License)
 
-Copyright (c) 2009 FIXME full name
+Copyright (c) 2009 Trek Glowacki
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
