@@ -12,3 +12,4 @@ module Exposure
     base.extend Configuration
   end
 end
+ActionController::Base.send :include, Exposure

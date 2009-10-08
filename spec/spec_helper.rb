@@ -29,7 +29,7 @@ require 'exposure'
 
 ActiveRecord::Base.logger = Logger.new(STDOUT) if ENV['DEBUG']
 ActionController::Base.logger = Logger.new(STDOUT) if ENV['DEBUG']
-ActionController::Base.send :include, Exposure
+# ActionController::Base.send :include, Exposure
 ActionController::Base.view_paths=(File.dirname(__FILE__) + '/fixtures')
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
