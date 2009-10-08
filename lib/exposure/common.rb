@@ -26,15 +26,16 @@ module Exposure
     #     defaults to [:html]
     def response_for(action_name, options = {}, &block)
       options[:is] ||= block
-      options[:formats] ||= [:html]
+      formats  = options[:formats] || [:html]
+      
       case options[:on]
       when NilClass, :any
-        self.const_get(:Responses)["#{action_name}.success.html"] = options[:is]
-        self.const_get(:Responses)["#{action_name}.failure.html"] = options[:is]
+        build_custom_response(action_name, :success, formats, options[:is])
+        build_custom_response(action_name, :failure, formats, options[:is])
       when :success
-        self.const_get(:Responses)["#{action_name}.success.html"] = options[:is]
+        build_custom_response(action_name, :success, formats, options[:is])
       when :failure
-        self.const_get(:Responses)["#{action_name}.failure.html"] = options[:is]
+        build_custom_response(action_name, :failure, formats, options[:is])
       end
     end
     
@@ -97,6 +98,12 @@ module Exposure
       nesting.each do |association_name|
         finders[association_name.to_s.singularize.to_sym] = Proc.new { [:find, params[:"#{association_name.to_s.singularize}_id"]] }
         finders[association_name] = Proc.new { [ :all ] }
+      end
+    end
+    
+    def build_custom_response(action_name, success_status, formats, response)
+      formats.each do |format|
+        self.const_get(:Responses)["#{action_name}.#{success_status}.#{format}"] = response
       end
     end
     
