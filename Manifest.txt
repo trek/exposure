@@ -5,7 +5,6 @@ exposure.gemspec
 lib/exposure.rb
 lib/exposure/common.rb
 lib/exposure/configuration.rb
-lib/exposure/patterns/resource.rb
 lib/exposure/patterns/resources.rb
 script/console
 script/destroy
@@ -28,7 +27,6 @@ spec/flashers/flash_with_block_spec.rb
 spec/flashers/flash_with_method_spec.rb
 spec/flashers/flash_with_proc_spec.rb
 spec/flashers/flash_with_string_spec.rb
-spec/resource_spec.rb
 spec/resources_spec.rb
 spec/responders/respond_to_mime_types_spec.rb
 spec/responders/respond_with_block_spec.rb

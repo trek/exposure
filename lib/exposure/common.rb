@@ -24,18 +24,19 @@ module Exposure
     #   :formats
     #     array of formats as symbols.
     #     defaults to [:html]
-    def response_for(action_name, options = {}, &block)
+    def response_for(*args, &block)
+      options = args.extract_options!
       options[:is] ||= block
       formats  = options[:formats] || [:html]
       
       case options[:on]
       when NilClass, :any
-        build_custom_response(action_name, :success, formats, options[:is])
-        build_custom_response(action_name, :failure, formats, options[:is])
+        build_custom_response(args, :success, formats, options[:is])
+        build_custom_response(args, :failure, formats, options[:is])
       when :success
-        build_custom_response(action_name, :success, formats, options[:is])
+        build_custom_response(args, :success, formats, options[:is])
       when :failure
-        build_custom_response(action_name, :failure, formats, options[:is])
+        build_custom_response(args, :failure, formats, options[:is])
       end
     end
     
@@ -79,13 +80,19 @@ module Exposure
     end
     
     # access point for creating and configuring before_ callbacks.
-    def before(trigger, action, options = {})
-      build_callback('before', trigger, action, options)
+    def before(trigger, *actions)
+      options = actions.extract_options!
+      actions.each do |action|
+        build_callback('before', trigger, action, options)
+      end
     end
     
     # access point for creating and configuring before_ callbacks.
-    def after(trigger, action, options = {})
-      build_callback('after', trigger, action, options)
+    def after(trigger, *actions)
+      options = actions.extract_options!
+      actions.each do |action|
+        build_callback('after', trigger, action, options)
+      end
     end
     
     # builds default finders
@@ -101,9 +108,11 @@ module Exposure
       end
     end
     
-    def build_custom_response(action_name, success_status, formats, response)
-      formats.each do |format|
-        self.const_get(:Responses)["#{action_name}.#{success_status}.#{format}"] = response
+    def build_custom_response(action_names, success_status, formats, response)
+      action_names.each do |action_name|
+        formats.each do |format|
+          self.const_get(:Responses)["#{action_name}.#{success_status}.#{format}"] = response
+        end
       end
     end
     
