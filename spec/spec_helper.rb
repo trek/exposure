@@ -54,6 +54,12 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column :created_at,   :datetime
     t.column :updated_at,   :datetime
   end
+  create_table :ship_types do |t|
+    t.column :title,        :string
+    t.column :body,         :text
+    t.column :created_at,   :datetime
+    t.column :updated_at,   :datetime
+  end
 end
 
 class Pirate < ActiveRecord::Base
@@ -68,4 +74,7 @@ class Ship < ActiveRecord::Base
   def validate
   end
   validates_associated :pirate
+end
+
+class ShipType < ActiveRecord::Base
 end

@@ -40,7 +40,7 @@ module Exposure
       
       if nesting = options[:nested]
         
-        self.parent_model = nesting.shift.to_s.singularize.capitalize.constantize
+        self.parent_model = nesting.shift.to_s.singularize.camelize.constantize
         
         build_default_finders(self.resources_name, nesting)
         
@@ -48,7 +48,7 @@ module Exposure
         self.member_nesting = nesting + [ [self.resource_name.to_sym] ]
         self.collection_nesting = nesting + [ [self.resources_name.to_sym] ]
       else
-        self.parent_model = self.resource_name.capitalize.constantize
+        self.parent_model = self.resource_name.camelize.constantize
         build_default_finders(self.resource_name, [])
         self.member_nesting = [ [self.resource_name.to_sym] ]
         self.collection_nesting = [ [self.resources_name.to_sym] ]
@@ -59,5 +59,6 @@ module Exposure
       
       define_callbacks(*Patterns::Resources::Callbacks)
     end
+    alias :expose :expose_many
   end
 end
