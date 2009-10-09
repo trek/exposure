@@ -24,19 +24,19 @@ module Exposure
     #   :formats
     #     array of formats as symbols.
     #     defaults to [:html]
-    def response_for(*args, &block)
-      options = args.extract_options!
+    def response_for(*actions, &block)
+      options = actions.extract_options!
       options[:is] ||= block
       formats  = options[:formats] || [:html]
       
       case options[:on]
       when NilClass, :any
-        build_custom_response(args, :success, formats, options[:is])
-        build_custom_response(args, :failure, formats, options[:is])
+        build_custom_response(actions, :success, formats, options[:is])
+        build_custom_response(actions, :failure, formats, options[:is])
       when :success
-        build_custom_response(args, :success, formats, options[:is])
+        build_custom_response(actions, :success, formats, options[:is])
       when :failure
-        build_custom_response(args, :failure, formats, options[:is])
+        build_custom_response(actions, :failure, formats, options[:is])
       end
     end
     
@@ -70,12 +70,12 @@ module Exposure
       
       case options[:on]
       when NilClass, :any
-        self.const_get(:FlashMessages)[true][action_name]  = options[:is]
-        self.const_get(:FlashMessages)[false][action_name] = options[:is]
+        self.const_get(:FlashMessages)["#{action_name}.success.html"]  = options[:is]
+        self.const_get(:FlashMessages)["#{action_name}.failure.html"]  = options[:is]
       when :success
-        self.const_get(:FlashMessages)[true][action_name]  = options[:is]
+        self.const_get(:FlashMessages)["#{action_name}.success.html"]  = options[:is]
       when :failure
-        self.const_get(:FlashMessages)[false][action_name] = options[:is]
+        self.const_get(:FlashMessages)["#{action_name}.failure.html"]  = options[:is]
       end
     end
     

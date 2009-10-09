@@ -7,7 +7,7 @@ require 'exposure/patterns/resources'
 require 'exposure/patterns/resource'
 
 module Exposure
-  VERSION = '0.0.5'
+  VERSION = '0.0.6'
   def self.included(base)
     base.extend Configuration
   end

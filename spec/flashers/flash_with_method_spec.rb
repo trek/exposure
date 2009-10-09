@@ -26,8 +26,7 @@ describe "flash messages with methods", :type => :controller do
   end
   
   after(:each) do
-    PiratesController::FlashMessages[true].clear
-    PiratesController::FlashMessages[false].clear
+    PiratesController::FlashMessages.clear
   end
   
   describe "responding with a method call" do

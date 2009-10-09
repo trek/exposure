@@ -5,7 +5,7 @@ module Exposure
         base::const_set(:DefaultResponses, DefaultResponses)
         base::const_set(:DefaultFlashMessages, DefaultFlashMessages)
         base::const_set(:Finders, { true => {}, false => {} })
-        base::const_set(:FlashMessages, { true => {}, false => {} })
+        base::const_set(:FlashMessages, {})
         base::const_set(:Responses, {} )
       end
       
@@ -21,12 +21,9 @@ module Exposure
       )
       
       DefaultFlashMessages = {
-        true => {
-          :create =>  Proc.new { "#{resource_name.capitalize} successfully created" },
-          :update =>  Proc.new { "#{resource_name.capitalize} successfully updated" },
-          :destroy => Proc.new { "#{resource_name.capitalize} successfully removed" }
-        },
-        false => {}
+        'create.success.html' => Proc.new { "#{resource_name.capitalize} successfully created" },
+        'update.success.html' => Proc.new { "#{resource_name.capitalize} successfully updated" },
+        'destroy.success.html' => Proc.new { "#{resource_name.capitalize} successfully removed" }
       }
       
       DefaultResponses = {
@@ -86,7 +83,7 @@ module Exposure
         
         def new
           run_callbacks(:before_assign)
-          new_record
+          build_record
           run_callbacks(:after_assign)
           run_callbacks(:before_response)
           run_callbacks(:before_response_on_success)
@@ -95,7 +92,7 @@ module Exposure
         
         def create
           run_callbacks(:before_assign)
-          new_record
+          build_record
           run_callbacks(:after_assign)
 
           run_callbacks(:before_create)
@@ -106,14 +103,14 @@ module Exposure
             run_callbacks(:after_create_on_success)
             run_callbacks(:before_response)
             run_callbacks(:before_response_on_success)
-            flash_for(:create, true)
+            flash_for(:create, :success)
             response_for(:create, :success, request.format.to_sym)
           else
             run_callbacks(:after_save_on_failure)
             run_callbacks(:after_create_on_failure)
             run_callbacks(:before_response)
             run_callbacks(:before_response_on_failure)
-            flash_for(:create, false)
+            flash_for(:create, :failure)
             response_for(:create, :failure, request.format.to_sym)
           end
           
@@ -146,14 +143,14 @@ module Exposure
               run_callbacks(:after_update_on_success)
               run_callbacks(:before_response)
               run_callbacks(:before_response_on_success)
-              flash_for(:update, true)
+              flash_for(:update, :success)
               response_for(:update, :success, request.format.to_sym)
             else
               run_callbacks(:after_save_on_failure)
               run_callbacks(:after_create_on_failure)
               run_callbacks(:before_response)
               run_callbacks(:before_response_on_failure)
-              flash_for(:update, false)
+              flash_for(:update, :failure)
               response_for(:update, :failure, request.format.to_sym)
             end
           else
@@ -177,7 +174,7 @@ module Exposure
             run_callbacks(:after_destroy_on_success)
             run_callbacks(:before_response)
             run_callbacks(:before_response_on_success)
-            flash_for(:destroy, true)
+            flash_for(:destroy, :success)
             response_for(:destroy, :success, request.format.to_sym)
 
           else
@@ -214,8 +211,8 @@ module Exposure
             custom_response_for(action_name, action_status, format) || default_response_for(action_name, action_status, format) || head(:not_acceptable)
           end
           
-          def custom_flash_for(action_name, action_successful)
-            if flash_message = self.class::FlashMessages[action_successful][action_name]
+          def custom_flash_for(action_name, action_status)
+            if flash_message = self.class::FlashMessages["#{action_name}.#{action_status}.html"]
               case flash_message
               when String
                 flash[:message] = flash_message
@@ -229,8 +226,8 @@ module Exposure
             end
           end
           
-          def default_flash_for(action_name, action_successful)
-            if message_proc = self.class::DefaultFlashMessages[action_successful][action_name]
+          def default_flash_for(action_name, action_status)
+            if message_proc = self.class::DefaultFlashMessages["#{action_name}.#{action_status}.html"]
               flash[:message] = self.instance_eval(&message_proc)
             end
           end
@@ -302,7 +299,7 @@ module Exposure
             @resource.update_attributes(params[resource_name])
           end
           
-          def new_record
+          def build_record
             @resource = instance_variable_set("@#{resource_name}", self.class.parent_model.new(params[resource_name]))
           end
           
