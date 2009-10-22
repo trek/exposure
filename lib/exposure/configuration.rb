@@ -11,6 +11,11 @@ module Exposure
     #   defaults to [ :html, :xml]
     # 
     def expose_many(name, options = {})
+      @_exposed_resource_name = name
+      @_exposed_resource_options = options
+      
+      extend Configuration::Options
+      
       class << self
         attr_accessor :resource_name, :resources_name, 
                       :resource_chain, :resources_chain, 
@@ -24,37 +29,15 @@ module Exposure
       include Exposure::Responding
       include Exposure::Callbacks
       
-      self.resource_name  = name.to_s.singularize
-      self.resources_name = name.to_s
-      
-      if nesting = options[:nested]
-        
-        self.parent_model = nesting.shift.to_s.singularize.camelize.constantize
-        
-        build_default_finders(self.resources_name, nesting)
-        
-        nesting.collect! {|sym| [sym.to_s.singularize.to_sym, sym]}
-        self.member_nesting = nesting + [ [self.resource_name.to_sym] ]
-        self.collection_nesting = nesting + [ [self.resources_name.to_sym] ]
-      else
-        self.parent_model = self.resource_name.camelize.constantize
-        build_default_finders(self.resource_name, [])
-        self.member_nesting = [ [self.resource_name.to_sym] ]
-        self.collection_nesting = [ [self.resources_name.to_sym] ]
-      end
+      self.name!
+      self.build_default_finders!
+      self.build_default_builders!
       
       extend  Patterns::Resources
       include Patterns::Resources::Actions
       
-      if options[:only]
-        options[:except] = Patterns::Resources::DefaultActions - options[:only]
-      end
-      
-      if options[:except]
-        options[:except].each do |action|
-          undef_method(action)
-        end
-      end
+      self.allow_actions!
+      self.allow_formats!
       
       define_callbacks(*Patterns::Resources::Callbacks)
     end

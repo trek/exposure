@@ -8,19 +8,17 @@ module Rails
 end
 
 
-require 'rubygems'
 # require 'multi_rails_init'
 
 require 'rubygems'
 require 'action_controller'
 require 'action_view'
 require 'active_record'
-require 'test_help'
 
 require 'spec'
 require File.dirname(__FILE__) + '/spec_rails_helper'
 require 'shoulda'
-require File.dirname(__FILE__) + "/custom_matchers"
+require File.dirname(__FILE__) + '/custom_matchers'
 require 'factory_girl'
 
 
@@ -29,7 +27,6 @@ require 'exposure'
 
 ActiveRecord::Base.logger = Logger.new(STDOUT) if ENV['DEBUG']
 ActionController::Base.logger = Logger.new(STDOUT) if ENV['DEBUG']
-# ActionController::Base.send :include, Exposure
 ActionController::Base.view_paths=(File.dirname(__FILE__) + '/fixtures')
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
