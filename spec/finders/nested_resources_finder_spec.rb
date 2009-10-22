@@ -1,26 +1,36 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "nested finders", :type => :controller do   
-  class ShipsController < ActionController::Base
-    expose_many(:ships, :nested => [:pirates])
-  end 
-  
-  controller_name :ships
-
-  before(:each) do
-    @controller = ShipsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+describe "nested finders", :type => :controller do
+  setup = lambda {
+    class ShipsController < ActionController::Base
+      expose_many(:ships, :nested => [:pirates])
+    end
+    
     ActionController::Routing::Routes.draw do |map| 
       map.resources :pirates do |pirate|
         pirate.resources :ships
       end
     end
+  }
+  
+  setup.call
+  controller_name :ships
+  Object.remove_class(ShipsController)
+
+  before(:each) do
+    setup.call
+    @controller = ShipsController.new
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
     
     @pirate = Factory.create(:pirate_with_ships)
     Pirate.stub(:find => @pirate)
     
     get(:index, {:pirate_id => 1})
+  end
+  
+  after(:each) do
+    Object.remove_class(ShipsController)
   end
   
   it { should assign_to(:ships) }

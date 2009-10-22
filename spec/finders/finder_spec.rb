@@ -1,30 +1,36 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "finders", :type => :controller do   
-  class PiratesController < ActionController::Base
-    expose_many(:pirates)
-    private
-      def find_pirate
-        Pirate.find_by_title(params[:id])
-      end
-  end 
-  
-  controller_name :pirates
-
-  before(:each) do
-    @controller = PiratesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+describe "finders", :type => :controller do 
+  setup = lambda {
+    class PiratesController < ActionController::Base
+      expose_many(:pirates)
+      private
+        def find_pirate
+          Pirate.find_by_title(params[:id])
+        end
+    end
+    
     ActionController::Routing::Routes.draw do |map| 
       map.resources :pirates
     end
+  }
+  
+  setup.call
+  controller_name :pirates
+  Object.remove_class(PiratesController)
+
+  before(:each) do
+    setup.call
+    @controller = PiratesController.new
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
     
     @pirate = Factory.stub(:pirate)
     Pirate.stub(:find_by_title => @pirate)
   end
   
   after(:each) do
-    PiratesController::Finders.clear
+    Object.remove_class(PiratesController)
   end
   
   it "finds with a method name as symbol" do

@@ -1,31 +1,37 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "responders", :type => :controller do   
-  class PiratesController < ActionController::Base
-    expose_many(:pirates)
-    
-    private
-      def example
-        redirect_to({:action => "test"})
-      end 
-  end 
+describe "responders", :type => :controller do
+  setup = lambda {
+    class PiratesController < ActionController::Base
+      expose_many(:pirates)
+
+      private
+        def example
+          redirect_to({:action => "test"})
+        end 
+    end
+  }
+  setup.call
+  
+  ActionController::Routing::Routes.draw do |map| 
+    map.resources :pirates, :collection => {:test => :any}
+  end
   
   controller_name :pirates
+  Object.remove_class(PiratesController)
   
   before(:each) do
+    setup.call
     @controller = PiratesController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    ActionController::Routing::Routes.draw do |map| 
-      map.resources :pirates, :collection => {:test => :any}
-    end
     
     @pirate = Factory.stub(:pirate)
     Pirate.stub(:new => @pirate)
   end
   
   after(:each) do
-    PiratesController::Responses.clear
+    Object.remove_class(PiratesController)
   end
   
   describe "responding with a method call" do
@@ -69,7 +75,7 @@ describe "responders", :type => :controller do
         PiratesController.response_for :create, :is => :example, :on => :failure
       end
 
-      it "should not respond with custom response  on success" do
+      it "should not respond with custom response on success" do
         @pirate.stub(:save => true)
         post(:create)        
         should_not redirect_to({:action => 'test'})

@@ -1,24 +1,29 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "flash messages with methods", :type => :controller do   
-  class PiratesController < ActionController::Base
-    expose_many(:pirates)
-    private
-      def custom_flash_message
-        'the flash was set'
-      end
-  end 
-  
-  controller_name :pirates
-  
-  before(:each) do
-    @controller = PiratesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+describe "flash messages with methods", :type => :controller do
+  setup = lambda {
+    class PiratesController < ActionController::Base
+      expose_many(:pirates)
+      private
+        def custom_flash_message
+          'the flash was set'
+        end
+    end 
+    
     ActionController::Routing::Routes.draw do |map| 
       map.resources :pirates, :collection => {:test => :any}
     end
-    
+  }
+  
+  setup.call
+  controller_name :pirates
+  Object.remove_class(PiratesController)
+  
+  before(:each) do
+    setup.call
+    @controller = PiratesController.new
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
     @custom_flash_message = 'the flash was set'
     
     @pirate = Factory.stub(:pirate)
@@ -26,7 +31,7 @@ describe "flash messages with methods", :type => :controller do
   end
   
   after(:each) do
-    PiratesController::FlashMessages.clear
+    Object.remove_class(PiratesController)
   end
   
   describe "responding with a method call" do
@@ -81,5 +86,5 @@ describe "flash messages with methods", :type => :controller do
         post(:create)
         should set_the_flash.to(@custom_flash_message)
       end
-    end
+  end
 end

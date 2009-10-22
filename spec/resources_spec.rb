@@ -1,18 +1,30 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe "a REST patterned resource of 'pirates'", :type => :controller do   
-  class PiratesController < ActionController::Base
-    expose_many(:pirates)
-  end 
+describe "a REST patterned resource of 'pirates'", :type => :controller do
+  setup = lambda {
+    class PiratesController < ActionController::Base
+      expose_many(:pirates)
+    end 
+  }
+  setup.call
+  
+  ActionController::Routing::Routes.draw do |map| 
+    map.resources :pirates
+  end
+  
   controller_name :pirates
+  Object.remove_class(PiratesController)
+  
   
   before(:each) do
+    setup.call
     @controller = PiratesController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    ActionController::Routing::Routes.draw do |map| 
-      map.resources :pirates
-    end
+  end
+  
+  after(:each) do
+    Object.remove_class(PiratesController)
   end
   
   describe 'configuration' do

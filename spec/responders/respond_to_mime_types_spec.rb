@@ -1,25 +1,31 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "mime type responders", :type => :controller do   
-  class PiratesController < ActionController::Base
-    expose_many(:pirates)
-  end 
-  
+describe "mime type responders", :type => :controller do
+  setup = lambda {
+    class PiratesController < ActionController::Base
+      expose_many(:pirates)
+    end
+  }
+  setup.call
+    
+  ActionController::Routing::Routes.draw do |map| 
+    map.resources :pirates, :collection => {:test => :any}
+  end
+
   controller_name :pirates
+  Object.remove_class(PiratesController)
   
   before(:each) do
+    setup.call
     @controller = PiratesController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    ActionController::Routing::Routes.draw do |map| 
-      map.resources :pirates, :collection => {:test => :any}
-    end
     @pirate = Factory.stub(:pirate)
-     Pirate.stub(:new => @pirate)
+    Pirate.stub(:new => @pirate)
   end
   
   after(:each) do
-    PiratesController::Responses.clear
+    Object.remove_class(PiratesController)
   end
   
   it "should respond with not acceptable if no acceptable mime type is not found" do

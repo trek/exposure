@@ -1,19 +1,26 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "flash messages with procs", :type => :controller do   
-  class PiratesController < ActionController::Base
-    expose_many(:pirates)
-  end 
+describe "flash messages with procs", :type => :controller do
+  setup = lambda {
+    class PiratesController < ActionController::Base
+      expose_many(:pirates)
+    end
+  }
+  setup.call
+  
+  ActionController::Routing::Routes.draw do |map| 
+    map.resources :pirates, :collection => {:test => :any}
+  end
   
   controller_name :pirates
+  Object.remove_class(PiratesController)
   
   before(:each) do
+    setup.call
+    
     @controller = PiratesController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    ActionController::Routing::Routes.draw do |map| 
-      map.resources :pirates, :collection => {:test => :any}
-    end
     
     @custom_flash_message = 'the flash was set'
     @proc = Proc.new { 'the flash was set' }
@@ -23,7 +30,7 @@ describe "flash messages with procs", :type => :controller do
   end
   
   after(:each) do
-    PiratesController::FlashMessages.clear
+    Object.remove_class(PiratesController)
   end
   
   describe "responding with a method call" do
