@@ -3,7 +3,7 @@ RAILS_ENV  = 'test' unless defined? RAILS_ENV
 
 module Rails
   module VERSION
-    STRING = '2.3.4'
+    STRING = '2.3.4' unless defined? STRING
   end
 end
 
