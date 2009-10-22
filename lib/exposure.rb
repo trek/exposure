@@ -2,9 +2,13 @@ $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 require 'action_controller'
 require 'exposure/configuration'
-require 'exposure/common'
+require 'exposure/behaviors/building'
+require 'exposure/behaviors/callbacks'
+require 'exposure/behaviors/finding'
+require 'exposure/behaviors/flashing'
+require 'exposure/behaviors/responding'
+
 require 'exposure/patterns/resources'
-require 'exposure/patterns/resource'
 
 module Exposure
   VERSION = '0.0.6'

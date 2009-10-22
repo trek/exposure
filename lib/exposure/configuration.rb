@@ -1,26 +1,5 @@
 module Exposure
-  module Configuration
-    # options
-    # :nested => false or symbol or array of symbols
-    #   defaults to false
-    # :only   => array of REST methods names as symbols to only include
-    #   defaults to [:show, :new, :create, :edit, :update, :destroy]
-    # :except => array of REST methods to exclude
-    #   defaults to [ ]
-    # :formats => array of 
-    #   defaults to [ :html, :xml, :json ]
-    def expose_one(resource_name, options = {})
-      include ActiveSupport::Callbacks      
-      extend Exposure::Common
-      self.resource_name = resource_name
-      self.member_nesting = [ [self.resource_name.to_sym] ]
-
-      extend  Patterns::Resource
-      include Patterns::Resource::Actions
-      
-      define_callbacks(*Patterns::Resource::Callbacks)
-    end
-    
+  module Configuration  
     # options
     # :nested => false or symbol or array of symbols
     #   defaults to false
@@ -29,11 +8,21 @@ module Exposure
     # :except => array of REST methods to exclude
     #   defaults to [ ]
     # :formats => array of 
-    #   defaults to [ :html, :xml, :json ]
+    #   defaults to [ :html, :xml]
     # 
     def expose_many(name, options = {})
+      class << self
+        attr_accessor :resource_name, :resources_name, 
+                      :resource_chain, :resources_chain, 
+                      :collection_nesting, :member_nesting,
+                      :parent_model
+      end
+      
       include ActiveSupport::Callbacks
-      extend Exposure::Common
+      include Exposure::Finding
+      include Exposure::Flashing
+      include Exposure::Responding
+      include Exposure::Callbacks
       
       self.resource_name  = name.to_s.singularize
       self.resources_name = name.to_s
@@ -56,6 +45,16 @@ module Exposure
       
       extend  Patterns::Resources
       include Patterns::Resources::Actions
+      
+      if options[:only]
+        options[:except] = Patterns::Resources::DefaultActions - options[:only]
+      end
+      
+      if options[:except]
+        options[:except].each do |action|
+          undef_method(action)
+        end
+      end
       
       define_callbacks(*Patterns::Resources::Callbacks)
     end

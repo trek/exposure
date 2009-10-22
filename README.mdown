@@ -1,19 +1,72 @@
-exposure
-======
+# exposure
+Exposure is a Rails is a controller abstraction layer like [`resource_this`](http://github.com/jnewland/resource_this), [`make_resourceful`](http://github.com/hcatlin/make_resourceful) and [`resource_controller`](resource_controller) with the same goal: exposing resources at the controller level with fewer headaches.
 
-REQUIREMENTS:
-======
+    class PostsController < ApplicationController
+      expose :posts
+    end
 
+## Customization:
+Exposure has a number of customization points:
+### Callbacks
+Exposure uses `ActiveSupport`'s callback system and has the following callbacks:
+
+  * `before_find`
+  * `after_find`
+  * `after_find_on_failure`
+  * `after_find_on_success`
+  * `before_assign`
+  * `after_assign`
+  * `before_save`
+  * `after_save`
+  * `after_save_on_failure`
+  * `after_save_on_success`
+  * `before_create`
+  * `after_create_on_failure`
+  * `after_create_on_success`
+  * `before_update`
+  * `after_update_on_failure`
+  * `after_update_on_success`
+  * `before_destroy`
+  * `after_destroy_on_success`
+  * `before_response`
+  * `before_response_on_success`
+  * `before_response_on_failure`
+  
+You can access these directly 
+
+    class PostsController
+      before_find :do_somethng_special, :if => {|c| c.action_name == 'show' }
+      private
+        def do_somethng_special
+          ...
+        end
+    end
+  
+or through a specialty syntax
+    
+    class PostsController
+      before :find, :do_somethng_special, :only => [:create]
+      private
+        def do_somethng_special
+          ...
+        end
+    end
+
+### Finders
+### Flashers
+### Responders
 
 INSTALL:
-=======
+------
     
-    gem sources -a http://gems.github.com (you only have to do this once)
-    sudo gem install trek-exposure
+    $ sudo gem install exposure
+    
+    # environment.rb
+    gem.exposure
 
 
 LICENSE:
-=========
+------
 
 (The MIT License)
 

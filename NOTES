@@ -1,0 +1,57 @@
+TOC.
+  I. Installing
+    sudo gem install exposure
+  II. REST
+  III. Current Controller behavior with class methods
+  IV. Exposure
+    A. expose
+    B. Finders
+    C. Responders
+    D. Flashers
+    E. Callbacks
+    
+Controllers already have some configuration-like structure:
+  before_filter
+  after_filter
+  around_filter
+  
+  skip_before_filter
+  skip_after_filter
+  skip_around_filter
+  
+  verify
+  layout
+  filter_parameter_logging
+  rescue_from
+  
+We're adding
+  expose
+  find
+  response_for
+  flash_for
+  
+  the following callbacks:
+    before_find
+    after_find
+    after_find_on_failure
+    after_find_on_success
+    before_assign
+    after_assign
+    before_save
+    after_save
+    after_save_on_failure
+    after_save_on_success
+    before_create
+    after_create_on_failure
+    after_create_on_success
+    before_update
+    after_update_on_failure
+    after_update_on_success
+    before_destroy
+    after_destroy_on_success
+    before_response
+    before_response_on_success
+    before_response_on_failure
+  and speciality access to these callbacks with
+    before
+    after

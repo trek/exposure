@@ -9,6 +9,8 @@ module Exposure
         base::const_set(:Responses, {} )
       end
       
+      DefaultActions = [:index, :show, :new, :create, :edit, :update, :destroy]
+      
       Callbacks = %w(
         before_find after_find after_find_on_failure after_find_on_success
         before_find_many after_find_many after_find_many_on_failure after_find_many_on_success
@@ -185,110 +187,16 @@ module Exposure
         end
         
         private
-          def custom_response_for(action_name, action_status, format)
-            if responder = self.class::Responses["#{action_name}.#{action_status}.#{format}"]
-              case responder
-              when Symbol
-                self.send(responder)
-              when Proc
-                self.instance_eval &responder
-              end
-            else
-              false
-            end
-          end
-
-          def default_response_for(action_name, action_status, format)
-            if responder = self.class::DefaultResponses["#{action_name}.#{action_status}.#{format}"]
-              self.instance_eval &responder
-            else
-              return false
-            end
-          end
-
-          def response_for(action_name, action_status, format = :html)
-            format = :html if format == :all
-            custom_response_for(action_name, action_status, format) || default_response_for(action_name, action_status, format) || head(:not_acceptable)
-          end
-          
-          def custom_flash_for(action_name, action_status)
-            if flash_message = self.class::FlashMessages["#{action_name}.#{action_status}.html"]
-              case flash_message
-              when String
-                flash[:message] = flash_message
-              when Symbol
-                flash[:message] = self.send(flash_message)
-              when Proc
-                flash[:message] = self.instance_eval(&flash_message)
-              end
-            else
-              false
-            end
-          end
-          
-          def default_flash_for(action_name, action_status)
-            if message_proc = self.class::DefaultFlashMessages["#{action_name}.#{action_status}.html"]
-              flash[:message] = self.instance_eval(&message_proc)
-            end
-          end
-          
-          def flash_for(action_name, action_successful)
-            custom_flash_for(action_name, action_successful) || default_flash_for(action_name, action_successful)
-          end
-          
-          def custom_finder_for(resource_name)
-            if finder = self.class::Finders[resource_name]
-              return finder
-            end
-          end
-          
-          def default_finder_for(resource_name)
-            if finder = self.class::DefaultFinders[resource_name]
-              return finder
-            end
-          end
-          
-          def finder_for(resource_name)
-            custom_finder_for(resource_name) || default_finder_for(resource_name)
-          end
-          
-          def call_finder_chain(object, chain, use_associaiton = true)
-            links = chain.shift
-            return object unless links
-
-            message = finder_for(links[0])
-            association = links[1] if use_associaiton
-
-            case message
-            when Symbol
-              value = self.send(message)
-            when Proc
-              value = self.instance_eval(&message)
-            else
-              raise "invalid finder of #{message.inspect}"
-            end
-
-            if value.kind_of?(Array) && !value.respond_to?(:proxy_target)
-              if use_associaiton
-                call_finder_chain(object.send(association).send(*value), chain)
-              else
-                call_finder_chain(object.send(*value), chain)
-              end
-            else
-              call_finder_chain(value, chain)
-            end
-          end
-          
-          def builder_for(resource_name)
-            custom_builder_for(resource_name) || default_builder_for(resource_name)
-          end
-          
           def resource_name
             self.class.resource_name
           end
           
           def resources_name
             self.class.resources_name
+          end
+          
+          def parent_model
+            self.class.parent_model
           end
           
           def save_record
@@ -300,15 +208,15 @@ module Exposure
           end
           
           def build_record
-            @resource = instance_variable_set("@#{resource_name}", self.class.parent_model.new(params[resource_name]))
+            @resource = instance_variable_set("@#{resource_name}", parent_model.new(params[resource_name]))
           end
           
           def find_record
-            @resource = instance_variable_set("@#{resource_name}", call_finder_chain(self.class.parent_model, self.class.member_nesting.clone, false))
+            @resource = instance_variable_set("@#{resource_name}", call_finder_chain(parent_model, self.class.member_nesting.clone, false))
           end
           
           def find_records            
-            @resources = instance_variable_set("@#{resources_name}", call_finder_chain(self.class.parent_model, self.class.collection_nesting.clone, false))
+            @resources = instance_variable_set("@#{resources_name}", call_finder_chain(parent_model, self.class.collection_nesting.clone, false))
           end
           
           def delete_record
