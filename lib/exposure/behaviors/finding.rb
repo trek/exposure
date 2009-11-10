@@ -56,10 +56,10 @@ module Exposure
         def call_finder_chain(object, chain, use_associaiton = true)
           links = chain.shift
           return object unless links
-
+          
           message = finder_for(links[0])
           association = links[1] if use_associaiton
-
+          
           case message
           when Symbol
             value = self.send(message)
@@ -68,7 +68,7 @@ module Exposure
           else
             raise "invalid finder of #{message.inspect}"
           end
-
+          
           if value.kind_of?(Array) && !value.respond_to?(:proxy_target)
             if use_associaiton
               call_finder_chain(object.send(association).send(*value), chain)

@@ -5,6 +5,7 @@ module Exposure
         base::const_set(:DefaultResponses, DefaultResponses)
         base::const_set(:DefaultFlashMessages, DefaultFlashMessages)
         base::const_set(:Finders, { true => {}, false => {} })
+        base::const_set(:Builders, {})
         base::const_set(:FlashMessages, {})
         base::const_set(:Responses, {} )
       end
@@ -208,7 +209,7 @@ module Exposure
           end
           
           def build_record
-            @resource = instance_variable_set("@#{resource_name}", parent_model.new(params[resource_name]))
+            @resource = instance_variable_set("@#{resource_name}", call_builder_chain(parent_model, self.class.member_nesting.clone, false))
           end
           
           def find_record

@@ -17,7 +17,7 @@ module Exposure
       #     can be a Proc or method name as symbol.
       def flash_for(action_name, options = {}, &block)
         options[:is] ||= block
-
+        
         case options[:on]
         when NilClass, :any
           self.const_get(:FlashMessages)["#{action_name}.success.html"]  = options[:is]
@@ -46,13 +46,13 @@ module Exposure
             false
           end
         end
-      
+        
         def default_flash_for(action_name, action_status)
           if message_proc = self.class::DefaultFlashMessages["#{action_name}.#{action_status}.html"]
             flash[:message] = self.instance_eval(&message_proc)
           end
         end
-      
+        
         def flash_for(action_name, action_successful)
           custom_flash_for(action_name, action_successful) || default_flash_for(action_name, action_successful)
         end

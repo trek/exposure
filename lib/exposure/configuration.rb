@@ -25,6 +25,7 @@ module Exposure
       
       include ActiveSupport::Callbacks
       include Exposure::Finding
+      include Exposure::Building
       include Exposure::Flashing
       include Exposure::Responding
       include Exposure::Callbacks

@@ -27,7 +27,7 @@ module Exposure
         options = actions.extract_options!
         options[:is] ||= block
         formats  = options[:formats] || [:html]
-
+        
         case options[:on]
         when NilClass, :any
           build_custom_response(actions, :success, formats, options[:is])
@@ -62,7 +62,7 @@ module Exposure
             false
           end
         end
-
+        
         def default_response_for(action_name, action_status, format)
           if responder = self.class::DefaultResponses["#{action_name}.#{action_status}.#{format}"]
             self.instance_eval &responder
@@ -70,7 +70,7 @@ module Exposure
             return false
           end
         end
-
+        
         def response_for(action_name, action_status, format = :html)
           format = :html if format == :all
           custom_response_for(action_name, action_status, format) || default_response_for(action_name, action_status, format) || head(:not_acceptable)
