@@ -47,7 +47,7 @@ module Exposure
       end
       
       def build_nested_default_builders!(nesting)
-        true
+        build_default_builder(self.resources_name, nesting)
       end
       
       def build_nested_default_finders!(nesting)
