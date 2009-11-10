@@ -12,7 +12,7 @@ require 'exposure/behaviors/responding'
 require 'exposure/patterns/resources'
 
 module Exposure
-  VERSION = '0.0.6'
+  VERSION = File.read(File.join(File.dirname(__FILE__), '../VERSION')).strip!.freeze
   def self.included(base)
     base.extend Configuration
   end
