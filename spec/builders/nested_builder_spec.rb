@@ -33,7 +33,7 @@ describe "nested builders", :type => :controller do
     Object.remove_class(ShipsController)
   end
   
-  it { should assign_to(:ships) }
-  it { should assign_to(:resources) }
+  it { should assign_to(:ship) }
+  it { should assign_to(:resource) }
   
 end

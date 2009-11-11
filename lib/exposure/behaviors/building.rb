@@ -12,9 +12,23 @@ module Exposure
       end
       
       def build_default_builder(member, nesting)
-        self::const_set(:DefaultBuilders, {
-          self.resource_name.intern  => Proc.new { [:new, params[resource_name] ] }
-        })
+
+        if nesting.any?
+          builders = self::const_set(:DefaultBuilders, {
+            self.resource_name.intern  => Proc.new { [:build, params[resource_name] ] },
+            self.resource_name.intern  => Proc.new { [:build, params[resource_name] ] }
+          })
+        else
+          self::const_set(:DefaultBuilders, {
+            self.resource_name.intern  => Proc.new { [:new, params[resource_name] ] },
+            self.resources_name.intern  => Proc.new { [:new, params[resource_name] ] }
+          })
+        end
+        
+        nesting.each do |association_name|
+          builders[association_name.to_s.singularize.to_sym] = Proc.new { [:find, params[:"#{association_name.to_s.singularize}_id"]] }
+          builders[association_name] = Proc.new { [:find, params[:"#{association_name.to_s.singularize}_id"]] }
+        end
       end
     end
     
