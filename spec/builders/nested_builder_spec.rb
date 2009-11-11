@@ -16,24 +16,29 @@ describe "nested builders", :type => :controller do
   setup.call
   controller_name :ships
   Object.remove_class(ShipsController)
-
+  
   before(:each) do
     setup.call
     @controller = ShipsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     
-    @pirate = Factory.create(:pirate_with_ships)
-    Pirate.stub(:find => @pirate)
+    @pirate = Factory.create(:pirate)
+    @ship   = Factory.build(:ship)
+    Pirate.stub!(:find).and_return(@pirate)
+    @pirate.ships.stub!(:build).and_return(@ship)
     
-    get(:new, {:pirate_id => 1, :ship => nil})
+    
+    params = {:pirate_id => @pirate.id, :ship => Factory.attributes_for(:ship)}
+    
+    get(:new, params)
   end
   
   after(:each) do
     Object.remove_class(ShipsController)
   end
   
-  it { should assign_to(:ship) }
-  it { should assign_to(:resource) }
+  it { should assign_to(:ship).with(@ship) }
+  it { should assign_to(:resource).with(@ship) }
   
 end

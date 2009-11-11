@@ -11,6 +11,12 @@ module Exposure
         self.const_get(:Builders)[name] = options[:with]
       end
       
+      def build_default_builders!
+        nesting = @_exposed_resource_options[:nested] || []
+        nesting = nesting.clone
+        build_default_builder(self.resources_name, nesting)
+      end
+      
       def build_default_builder(member, nesting)
         if nesting.any?
           builders = self::const_set(:DefaultBuilders, {

@@ -4,5 +4,5 @@ Factory.define :pirate do |p|
 end
 
 Factory.define :pirate_with_ships, :parent => :pirate do |p|
-  p.ships {|ships| [ships.association(:ship)]}
+  p.ships {|ships| [ships.association(:ship), ships.association(:dinghy)] }
 end

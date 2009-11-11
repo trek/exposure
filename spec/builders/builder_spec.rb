@@ -40,14 +40,14 @@ describe "builders", :type => :controller do
     should assign_to(:pirate).with(@pirate)
   end
   
-  it "finds with a method name as symbol" do
+  it "builds with a method name as symbol" do
     PiratesController.build :pirate, :with => :build_pirate
     post(:create, {:pirate => {}})
     
     should assign_to(:pirate).with(@pirate)    
   end
   
-  it "finds with a block" do
+  it "builds with a block" do
     PiratesController.build :pirate do
       Pirate.new(params[:pirate])
     end

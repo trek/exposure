@@ -216,7 +216,7 @@ module Exposure
             @resource = instance_variable_set("@#{resource_name}", call_finder_chain(parent_model, self.class.member_nesting, false))
           end
           
-          def find_records            
+          def find_records      
             @resources = instance_variable_set("@#{resources_name}", call_finder_chain(parent_model, self.class.collection_nesting, false))
           end
           

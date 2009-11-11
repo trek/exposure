@@ -22,6 +22,31 @@ module Exposure
         self.const_get(:Finders)[name] = options[:with]
       end
       
+      def build_default_finders!
+        if nesting = @_exposed_resource_options[:nested]
+          self.build_nested_default_finders!(nesting)
+          return 
+        end
+        
+        self.parent_model = self.resource_name.camelize.constantize
+        build_default_finders(self.resource_name, [])
+        self.member_nesting = [ [self.resource_name.to_sym] ]
+        self.collection_nesting = [ [self.resources_name.to_sym] ]
+      end
+      
+      def build_nested_default_finders!(nesting)
+        nesting = nesting.clone
+        self.parent_model = nesting.first.to_s.singularize.camelize.constantize
+        
+        build_default_finders(self.resources_name, nesting)
+        
+        nesting.collect! {|sym| [sym.to_s.singularize.to_sym, sym]}
+        
+        
+        self.member_nesting = nesting + [ [self.resource_name.to_sym, self.resources_name.to_sym] ]
+        self.collection_nesting = nesting + [ [self.resources_name.to_sym, self.resources_name.to_sym] ]
+      end
+      
       def build_default_finders(member, nesting) #:nodoc:
         finders = self::const_set(:DefaultFinders, {
           self.resource_name.intern  => Proc.new { [:find, params[:id] ] },

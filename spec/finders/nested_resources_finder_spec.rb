@@ -24,16 +24,16 @@ describe "nested finders", :type => :controller do
     @response   = ActionController::TestResponse.new
     
     @pirate = Factory.create(:pirate_with_ships)
-    Pirate.stub(:find => @pirate)
+    @ships = @pirate.ships
     
-    get(:index, {:pirate_id => 1})
+    get(:index, {:pirate_id => @pirate.id})
   end
   
   after(:each) do
     Object.remove_class(ShipsController)
   end
   
-  it { should assign_to(:ships) }
-  it { should assign_to(:resources) }
+  it { should assign_to(:ships).with(@ships)}
+  it { should assign_to(:resources).with(@ships) }
   
 end
