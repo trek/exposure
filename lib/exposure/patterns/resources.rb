@@ -209,15 +209,15 @@ module Exposure
           end
           
           def build_record
-            @resource = instance_variable_set("@#{resource_name}", call_builder_chain(parent_model, self.class.member_nesting.clone, false))
+            @resource = instance_variable_set("@#{resource_name}", call_builder_chain(parent_model, self.class.member_nesting, false))
           end
           
           def find_record
-            @resource = instance_variable_set("@#{resource_name}", call_finder_chain(parent_model, self.class.member_nesting.clone, false))
+            @resource = instance_variable_set("@#{resource_name}", call_finder_chain(parent_model, self.class.member_nesting, false))
           end
           
           def find_records            
-            @resources = instance_variable_set("@#{resources_name}", call_finder_chain(parent_model, self.class.collection_nesting.clone, false))
+            @resources = instance_variable_set("@#{resources_name}", call_finder_chain(parent_model, self.class.collection_nesting, false))
           end
           
           def delete_record

@@ -12,22 +12,14 @@ module Exposure
       end
       
       def build_default_builder(member, nesting)
-
         if nesting.any?
           builders = self::const_set(:DefaultBuilders, {
             self.resource_name.intern  => Proc.new { [:build, params[resource_name] ] },
-            self.resource_name.intern  => Proc.new { [:build, params[resource_name] ] }
           })
         else
           self::const_set(:DefaultBuilders, {
             self.resource_name.intern  => Proc.new { [:new, params[resource_name] ] },
-            self.resources_name.intern  => Proc.new { [:new, params[resource_name] ] }
           })
-        end
-        
-        nesting.each do |association_name|
-          builders[association_name.to_s.singularize.to_sym] = Proc.new { [:find, params[:"#{association_name.to_s.singularize}_id"]] }
-          builders[association_name] = Proc.new { [:find, params[:"#{association_name.to_s.singularize}_id"]] }
         end
       end
     end
@@ -47,10 +39,11 @@ module Exposure
         end
         
         def builder_for(resource_name)
-          custom_builder_for(resource_name) || default_builder_for(resource_name)
+          custom_builder_for(resource_name) || default_builder_for(resource_name) || finder_for(resource_name)
         end
         
         def call_builder_chain(object, chain, use_associaiton = true)
+          chain = chain.clone
           links = chain.shift
           return object unless links
           

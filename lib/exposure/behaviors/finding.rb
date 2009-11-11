@@ -54,6 +54,7 @@ module Exposure
         end
         
         def call_finder_chain(object, chain, use_associaiton = true)
+          chain = chain.clone
           links = chain.shift
           return object unless links
           
