@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe "a REST patterned resource of 'pirates'", :type => :controller do
+describe "a REST patterned resource", :type => :controller do
   setup = lambda {
     class PiratesController < ActionController::Base
       expose_many(:pirates)
@@ -28,7 +28,7 @@ describe "a REST patterned resource of 'pirates'", :type => :controller do
   end
   
   describe 'configuration' do
-    it "has a resource name of 'post'" do
+    it "has a resource name of 'pirate'" do
       @controller.send(:resource_name).should == 'pirate'
     end
   
@@ -41,11 +41,13 @@ describe "a REST patterned resource of 'pirates'", :type => :controller do
   
   describe 'index' do
     before do
+      @pirates = [Factory.stub(:pirate)]
+      Pirate.should_receive(:find).with(:all).and_return(@pirates)
       get :index
     end
 
-    it { should assign_to(:pirates) }
-    it { should assign_to(:resources) }
+    it { should assign_to(:pirates).with(@pirates) }
+    it { should assign_to(:resources).with(@pirates) }
     it { should respond_with(:success) }
     it { should render_template(:index) }
     it { should_not set_the_flash }
@@ -58,8 +60,8 @@ describe "a REST patterned resource of 'pirates'", :type => :controller do
         get :show, {:id => 1}
       end
       
-      it { should assign_to(:pirate) }
-      it { should assign_to(:resource) }
+      it { should assign_to(:pirate).with(@pirate) }
+      it { should assign_to(:resource).with(@pirate) }
       it { should respond_with(:success) }
       it { should render_template(:show) }
       it { should_not set_the_flash }
@@ -82,11 +84,13 @@ describe "a REST patterned resource of 'pirates'", :type => :controller do
   
   describe 'new' do
     before(:each) do
+      @pirate = Factory.stub(:pirate)
+      Pirate.should_receive(:new).and_return(@pirate)
       get :new
     end
     
-    it { should assign_to(:pirate) }
-    it { should assign_to(:resource) }
+    it { should assign_to(:pirate).with(@pirate) }
+    it { should assign_to(:resource).with(@pirate) }
     it { should respond_with(:success) }
     it { should render_template(:new) }
     it { should_not set_the_flash }
@@ -99,14 +103,14 @@ describe "a REST patterned resource of 'pirates'", :type => :controller do
         params = {
           :pirate => {}
         }
-        post_before_saving = Factory.build(:pirate)
-        Pirate.should_receive(:new).with(params[:pirate]).and_return(post_before_saving)
-        post_before_saving.should_receive(:save).and_return(true)
+        @pirate = Factory.build(:pirate)
+        Pirate.should_receive(:new).with(params[:pirate]).and_return(@pirate)
+        @pirate.should_receive(:save).and_return(true)
         post(:create, params)
       end
       
-      it { should assign_to(:pirate) }
-      it { should assign_to(:resource) }
+      it { should assign_to(:pirate).with(@pirate) }
+      it { should assign_to(:resource).with(@pirate) }
       it { should respond_with(:redirect).to(:index) }
       it { should set_the_flash.to('Pirate successfully created') }
     end
@@ -116,14 +120,14 @@ describe "a REST patterned resource of 'pirates'", :type => :controller do
         params = {
           :pirate => {}
         }
-        post_before_saving = Factory.build(:pirate)
-        Pirate.should_receive(:new).with(params[:pirate]).and_return(post_before_saving)
-        post_before_saving.should_receive(:save).and_return(false)
+        @pirate = Factory.build(:pirate)
+        Pirate.should_receive(:new).with(params[:pirate]).and_return(@pirate)
+        @pirate.should_receive(:save).and_return(false)
         post(:create, params)
       end
       
-      it { should assign_to(:pirate) }
-      it { should assign_to(:resource) }
+      it { should assign_to(:pirate).with(@pirate) }
+      it { should assign_to(:resource).with(@pirate) }
       it { should respond_with(:success) }
       it { should render_template(:new) }
       it { should_not set_the_flash }
@@ -133,12 +137,13 @@ describe "a REST patterned resource of 'pirates'", :type => :controller do
   describe 'edit' do
     describe 'with found resource' do
       before(:each) do
-        Pirate.should_receive(:find).with('1').and_return(Factory.stub(:pirate))
+        @pirate = Factory.stub(:pirate)
+        Pirate.should_receive(:find).with('1').and_return(@pirate)
         get :edit, {:id => 1}
       end
       
-      it { should assign_to(:pirate) }
-      it { should assign_to(:resource) }
+      it { should assign_to(:pirate).with(@pirate) }
+      it { should assign_to(:resource).with(@pirate) }
       it { should respond_with(:success) }
       it { should render_template(:edit) }
       it { should_not set_the_flash }
@@ -166,14 +171,14 @@ describe "a REST patterned resource of 'pirates'", :type => :controller do
           :id  => 1,
           :pirate => {}
         }
-        post_before_saving = Factory.build(:pirate)
-        Pirate.should_receive(:find).with("1").and_return(post_before_saving)
-        post_before_saving.should_receive(:update_attributes).with(params[:pirate]).and_return(true)
+        @pirate = Factory.build(:pirate)
+        Pirate.should_receive(:find).with("1").and_return(@pirate)
+        @pirate.should_receive(:update_attributes).with(params[:pirate]).and_return(true)
         put(:update, params)
       end
       
-      it { should assign_to(:pirate) }
-      it { should assign_to(:resource) }
+      it { should assign_to(:pirate).with(@pirate) }
+      it { should assign_to(:resource).with(@pirate) }
       it { should respond_with(:redirect).to(:show) }
       it { should set_the_flash.to('Pirate successfully updated') }
       
@@ -185,14 +190,14 @@ describe "a REST patterned resource of 'pirates'", :type => :controller do
           :id  => 1,
           :pirate => {}
         }
-        post_before_saving = Factory.build(:pirate)
-        Pirate.should_receive(:find).with("1").and_return(post_before_saving)
-        post_before_saving.should_receive(:update_attributes).with(params[:pirate]).and_return(false)
+        @pirate = Factory.build(:pirate)
+        Pirate.should_receive(:find).with("1").and_return(@pirate)
+        @pirate.should_receive(:update_attributes).with(params[:pirate]).and_return(false)
         put(:update, params)
       end
       
-      it { should assign_to(:pirate) }
-      it { should assign_to(:resource) }
+      it { should assign_to(:pirate).with(@pirate) }
+      it { should assign_to(:resource).with(@pirate) }
       it { should respond_with(:success) }
       it { should render_template(:edit) }
       it { should_not set_the_flash }
@@ -204,9 +209,9 @@ describe "a REST patterned resource of 'pirates'", :type => :controller do
       params = {
         :id  => 1,
       }
-      post_before_saving = Factory.build(:pirate)
-      Pirate.should_receive(:find).with("1").and_return(post_before_saving)
-      post_before_saving.should_receive(:destroy)
+      @pirate = Factory.build(:pirate)
+      Pirate.should_receive(:find).with("1").and_return(@pirate)
+      @pirate.should_receive(:destroy).and_return(true)
       delete(:destroy, params)
     end
     
