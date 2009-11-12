@@ -1,3 +1,4 @@
+require File.dirname(__FILE__) + '/flashing_behavior'
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "flash messages with procs", :type => :controller do
@@ -7,6 +8,10 @@ describe "flash messages with procs", :type => :controller do
     end
   }
   setup.call
+  
+  def setup_flasher(action, is, success = nil)
+    PiratesController.flash_for :create, :is => Proc.new { 'the flash was set' }, :on => success
+  end
   
   ActionController::Routing::Routes.draw do |map| 
     map.resources :pirates, :collection => {:test => :any}
@@ -23,8 +28,7 @@ describe "flash messages with procs", :type => :controller do
     @response   = ActionController::TestResponse.new
     
     @custom_flash_message = 'the flash was set'
-    @proc = Proc.new { 'the flash was set' }
-        
+    
     @pirate = Factory.stub(:pirate)
     Pirate.stub(:new => @pirate)
   end
@@ -33,57 +37,5 @@ describe "flash messages with procs", :type => :controller do
     Object.remove_class(PiratesController)
   end
   
-  describe "responding with a method call" do
-    before(:each) do
-      PiratesController.flash_for :create, :is => @proc
-    end
-    
-    it "should respond with redirect to test on success" do
-      @pirate.stub(:save => true)
-      post(:create)
-      should set_the_flash.to(@custom_flash_message)
-    end
-    
-    it "should respond with redirect to test on failure" do
-      @pirate.stub(:save => false)
-      post(:create)
-      should set_the_flash.to(@custom_flash_message)
-    end
-  end
-  
-  describe "responding with a method call :on => :success" do
-    before(:each) do
-       PiratesController.flash_for :create, :is => @proc, :on => :success
-     end
-
-    it "should respond with custom response on success" do
-       @pirate.stub(:save => true)
-       post(:create)
-       should set_the_flash.to(@custom_flash_message)
-     end
-
-    it "should not respond with custom response on failure" do
-       @pirate.stub(:save => false)
-       post(:create)
-       should_not redirect_to({:action => 'test'})
-     end
-  end
-  
-  describe "responding with a method call :on => :failure" do
-      before(:each) do
-        PiratesController.flash_for :create, :is => @proc, :on => :failure
-      end
-
-      it "should not respond with custom response  on success" do
-        @pirate.stub(:save => true)
-        post(:create)        
-        should_not redirect_to({:action => 'test'})
-      end
-
-      it "should respond with custom response on failure" do
-        @pirate.stub(:save => false)
-        post(:create)
-        should set_the_flash.to(@custom_flash_message)
-      end
-    end
+  it_should_behave_like "a flasher"
 end

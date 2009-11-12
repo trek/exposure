@@ -1,15 +1,19 @@
+require File.dirname(__FILE__) + '/flashing_behavior'
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "flash messages with blocks", :type => :controller do
   setup = lambda {
     class PiratesController < ActionController::Base
       expose_many(:pirates)
-      PiratesController.flash_for :create do
-        "the flash is set to #{@pirate.title}"
-      end
     end 
   }
   setup.call
+  
+  def setup_flasher(action, is, success = nil)
+    PiratesController.flash_for action, :on => success do
+      "the flash is set to #{@pirate.title}"
+    end
+  end
   
   ActionController::Routing::Routes.draw do |map| 
     map.resources :pirates, :collection => {:test => :any}
@@ -38,5 +42,5 @@ describe "flash messages with blocks", :type => :controller do
     Object.remove_class(PiratesController)
   end
   
-  it { should set_the_flash.to(@custom_flash_message) }
+  it_should_behave_like "a flasher"
 end
