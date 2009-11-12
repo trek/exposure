@@ -45,9 +45,9 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column :created_at,   :datetime
     t.column :updated_at,   :datetime
   end
-  create_table :widgets do |t|
-    t.column :title,        :string
-    t.column :body,         :text
+  create_table :cannons do |t|
+    t.column :name,        :string
+    t.column :ship_id,      :integer
     t.column :created_at,   :datetime
     t.column :updated_at,   :datetime
   end
@@ -56,6 +56,12 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column :body,         :text
     t.column :created_at,   :datetime
     t.column :updated_at,   :datetime
+  end
+end
+
+class Cannon < ActiveRecord::Base
+  belongs_to :ship
+  def validate
   end
 end
 
@@ -68,6 +74,7 @@ end
 
 class Ship < ActiveRecord::Base
   belongs_to :pirate
+  has_many :cannons
   def validate
   end
   validates_associated :pirate
