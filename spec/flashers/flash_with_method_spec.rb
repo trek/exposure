@@ -16,8 +16,8 @@ describe "flash messages with methods", :type => :controller do
     end
   }
 
-  def setup_flasher(action, is, success = nil)
-    PiratesController.flash_for action, :is => is, :on => success
+  def setup_flasher(action, success = nil)
+    PiratesController.flash_for action, :is => :custom_flash_message, :on => success
   end
   
   setup.call

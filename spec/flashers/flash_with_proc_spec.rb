@@ -9,7 +9,7 @@ describe "flash messages with procs", :type => :controller do
   }
   setup.call
   
-  def setup_flasher(action, is, success = nil)
+  def setup_flasher(action, success = nil)
     PiratesController.flash_for :create, :is => Proc.new { 'the flash was set' }, :on => success
   end
   

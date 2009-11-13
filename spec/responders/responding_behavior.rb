@@ -1,31 +1,31 @@
-shared_examples_for "a flasher" do
+shared_examples_for "a responder" do
   describe "responding with a method call" do
     before(:each) do
-      setup_flasher(:create)
+      setup_responder(:create)
     end
     
     it "should respond with redirect to test on success" do
       @pirate.stub(:save => true)
       post(:create)
-      should set_the_flash.to(@custom_flash_message)
+      should redirect_to({:action => 'test'})
     end
     
     it "should respond with redirect to test on failure" do
       @pirate.stub(:save => false)
       post(:create)
-      should set_the_flash.to(@custom_flash_message)
+      should redirect_to({:action => 'test'})
     end
   end
   
   describe "responding with a method call :on => :success" do
     before(:each) do
-      setup_flasher(:create, :success)
+      setup_responder(:create, :success)
      end
 
     it "should respond with custom response on success" do
        @pirate.stub(:save => true)
        post(:create)
-       should set_the_flash.to(@custom_flash_message)
+       should redirect_to({:action => 'test'})
      end
 
     it "should not respond with custom response on failure" do
@@ -37,10 +37,10 @@ shared_examples_for "a flasher" do
   
   describe "responding with a method call :on => :failure" do
       before(:each) do
-        setup_flasher(:create, :failure)
+        setup_responder(:create, :failure)
       end
 
-      it "should not respond with custom response  on success" do
+      it "should not respond with custom response on success" do
         @pirate.stub(:save => true)
         post(:create)        
         should_not redirect_to({:action => 'test'})
@@ -49,7 +49,7 @@ shared_examples_for "a flasher" do
       it "should respond with custom response on failure" do
         @pirate.stub(:save => false)
         post(:create)
-        should set_the_flash.to(@custom_flash_message)
+        should redirect_to({:action => 'test'})
       end
-  end
+    end
 end

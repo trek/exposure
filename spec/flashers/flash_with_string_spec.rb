@@ -15,8 +15,8 @@ describe "flash messages with strings", :type => :controller do
   controller_name :pirates
   Object.remove_class(PiratesController)
   
-  def setup_flasher(action, is, success = nil)
-    PiratesController.flash_for action, :is => is, :on => success
+  def setup_flasher(action, success = nil)
+    PiratesController.flash_for action, :is => 'the flash was set', :on => success
   end
   
   before(:each) do

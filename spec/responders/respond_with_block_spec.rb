@@ -1,3 +1,4 @@
+require File.dirname(__FILE__) + '/responding_behavior'
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "responders", :type => :controller do
@@ -10,6 +11,12 @@ describe "responders", :type => :controller do
   
   ActionController::Routing::Routes.draw do |map| 
     map.resources :pirates, :collection => {:test => :any}
+  end
+  
+  def setup_responder(action, success = nil)
+    PiratesController.response_for :create, :on => success do
+       redirect_to({:action => 'test'})
+    end
   end
   
   controller_name :pirates
@@ -28,63 +35,6 @@ describe "responders", :type => :controller do
     Object.remove_class(PiratesController)
   end
   
-  describe "responding with a method call" do
-    before(:each) do
-      PiratesController.response_for :create do
-        redirect_to({:action => 'test'})
-      end
-    end
-    
-    it "should respond with redirect to test on success" do
-      @pirate.stub(:save => true)
-      post(:create)
-      should redirect_to({:action => 'test'})
-    end
-    
-    it "should respond with redirect to test on failure" do
-      @pirate.stub(:save => false)
-      post(:create)
-      should redirect_to({:action => 'test'})
-    end
-  end
+  it_should_behave_like "a responder"
   
-  describe "responding with a method call :on => :success" do
-    before(:each) do
-       PiratesController.response_for :create, :on => :success do
-         redirect_to({:action => 'test'})
-       end
-     end
-
-    it "should respond with custom response on success" do
-       @pirate.stub(:save => true)
-       post(:create)
-       should redirect_to({:action => 'test'})
-     end
-
-    it "should not respond with custom response on failure" do
-       @pirate.stub(:save => false)
-       post(:create)
-       should_not redirect_to({:action => 'test'})
-     end
-  end
-  
-  describe "responding with a method call :on => :failure" do
-      before(:each) do
-        PiratesController.response_for :create, :on => :failure do
-           redirect_to({:action => 'test'})
-         end
-      end
-
-      it "should not respond with custom response  on success" do
-        @pirate.stub(:save => true)
-        post(:create)        
-        should_not redirect_to({:action => 'test'})
-      end
-
-      it "should respond with custom response on failure" do
-        @pirate.stub(:save => false)
-        post(:create)
-        should redirect_to({:action => 'test'})
-      end
-    end
 end

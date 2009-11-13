@@ -9,7 +9,7 @@ describe "flash messages with blocks", :type => :controller do
   }
   setup.call
   
-  def setup_flasher(action, is, success = nil)
+  def setup_flasher(action, success = nil)
     PiratesController.flash_for action, :on => success do
       "the flash is set to #{@pirate.title}"
     end
