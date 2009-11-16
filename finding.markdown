@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Exposure: finding
+title: Exposure finding
 ---
 
 Finding
