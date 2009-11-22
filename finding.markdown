@@ -59,5 +59,5 @@ class PuppiesController < ApplicationController
 end
 {% endhighlight %}
 
-[Previous: Exposing Resources](/exposing.html) [Next: Building](/building.html)
+[Previous: Exposing Resources](exposing.html) [Next: Building](building.html)
   

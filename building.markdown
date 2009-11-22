@@ -6,7 +6,7 @@ title: Exposure building
 Building
 ========
 
-In the [previous chapter](/finding.html) we learned about `exposure`'s finding capabilities. Some actions (e.g. `new` and `create`) don't manage existing resources. Instead, they build new resources from parameterized data. The default building strategy is to call the resources parent class with `new`, passing in parameters named for the resource's singular name. With the following code example
+In the [previous chapter](/finding.html) we learned about `exposure`'s finding capabilities. Some actions (e.g. `new` and `create`) don't manage existing resources. Instead, they build new resources from parameterized data. The default building strategy is to call the resource's parent class with `new`, passing in parameters named for the resource's singular name. With the following code example
 
 {% highlight ruby %}
 class PostsController
