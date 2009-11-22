@@ -4,7 +4,7 @@ code {
 
 .highlight pre { 
   background-color: #f0f0f0;
-  margin-left: 3em; 
+  padding: .5em 1em; 
   overflow: auto; 
 }
 

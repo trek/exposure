@@ -6,7 +6,7 @@ title: Exposure building
 Building
 ========
 
-In [previous chapter](/finding.html) we learned about `exposure`'s finding capabilities. Some actions (e.g. `new` and `create`) don't manage existing resources. Instead, they build new resources from user contributed data. The default building strategy is to call the resources parent class with `new`, passing in parameters named for the resource's singular name. With the following code example
+In the [previous chapter](/finding.html) we learned about `exposure`'s finding capabilities. Some actions (e.g. `new` and `create`) don't manage existing resources. Instead, they build new resources from parameterized data. The default building strategy is to call the resources parent class with `new`, passing in parameters named for the resource's singular name. With the following code example
 
 {% highlight ruby %}
 class PostsController
@@ -18,7 +18,7 @@ new `Post` objects in the `new` and `create` actions will be built with `Post.ne
 
 The following tables summarizes finding and variable assignment in resource controllers:  
 
-Action    | Finder called                | Assigned variables
+Action    | Builder called               | Assigned variables
 ----------|------------------------------|--------------------
 `index`   |                              | `@resources`, `@posts`
 `show`    |                              | `@resource`, `@post`

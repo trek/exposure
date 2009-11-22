@@ -8,7 +8,7 @@ Finding
 
 The default behavior for finding resources in exposure is finding with the named scope of `all` for multiple resources and finding by `id` obtained from `params` for singular resources.  The following code example:
 
-{% highlight ruby %}       
+{% highlight ruby %}
 class MembersController
   expose :members
 end

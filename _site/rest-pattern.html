@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+     <title>Exposure REST Pattern</title>
+     <meta name="author" content="Trek glowakcki" />
+     <!-- syntax highlighting CSS -->
+     <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+     <!-- Homepage CSS -->
+     <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen, projection" />
+  </head>
+  <body>
+    
+    <div class="container">
+      
+      <h1>The REST Pattern in Rails</h1>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># GET /posts</span>
+  <span class="c1"># GET /posts.xml</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="vi">@posts</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">all</span>
+
+    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="c1"># index.html.erb</span>
+      <span class="nb">format</span><span class="o">.</span><span class="n">xml</span>  <span class="p">{</span> <span class="n">render</span> <span class="ss">:xml</span> <span class="o">=&gt;</span> <span class="vi">@posts</span> <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># GET /posts/1</span>
+  <span class="c1"># GET /posts/1.xml</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+
+    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="c1"># show.html.erb</span>
+      <span class="nb">format</span><span class="o">.</span><span class="n">xml</span>  <span class="p">{</span> <span class="n">render</span> <span class="ss">:xml</span> <span class="o">=&gt;</span> <span class="vi">@post</span> <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># GET /posts/new</span>
+  <span class="c1"># GET /posts/new.xml</span>
+  <span class="k">def</span> <span class="nf">new</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">new</span>
+
+    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="c1"># new.html.erb</span>
+      <span class="nb">format</span><span class="o">.</span><span class="n">xml</span>  <span class="p">{</span> <span class="n">render</span> <span class="ss">:xml</span> <span class="o">=&gt;</span> <span class="vi">@post</span> <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># GET /posts/1/edit</span>
+  <span class="k">def</span> <span class="nf">edit</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="c1"># POST /posts</span>
+  <span class="c1"># POST /posts.xml</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:post</span><span class="o">]</span><span class="p">)</span>
+
+    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+      <span class="k">if</span> <span class="vi">@post</span><span class="o">.</span><span class="n">save</span>
+        <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;Post was successfully created.&#39;</span>
+        <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span><span class="p">(</span><span class="vi">@post</span><span class="p">)</span> <span class="p">}</span>
+        <span class="nb">format</span><span class="o">.</span><span class="n">xml</span>  <span class="p">{</span> <span class="n">render</span> <span class="ss">:xml</span> <span class="o">=&gt;</span> <span class="vi">@post</span><span class="p">,</span> 
+                             <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="ss">:created</span><span class="p">,</span> 
+                             <span class="ss">:location</span> <span class="o">=&gt;</span> <span class="vi">@post</span> <span class="p">}</span>
+      <span class="k">else</span>
+        <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">:action</span> <span class="o">=&gt;</span> <span class="s2">&quot;new&quot;</span> <span class="p">}</span>
+        <span class="nb">format</span><span class="o">.</span><span class="n">xml</span>  <span class="p">{</span> <span class="n">render</span> <span class="ss">:xml</span> <span class="o">=&gt;</span> <span class="vi">@post</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> 
+                             <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="ss">:unprocessable_entity</span> <span class="p">}</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># PUT /posts/1</span>
+  <span class="c1"># PUT /posts/1.xml</span>
+  <span class="k">def</span> <span class="nf">update</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+
+    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+      <span class="k">if</span> <span class="vi">@post</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:post</span><span class="o">]</span><span class="p">)</span>
+        <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;Post was successfully updated.&#39;</span>
+        <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span><span class="p">(</span><span class="vi">@post</span><span class="p">)</span> <span class="p">}</span>
+        <span class="nb">format</span><span class="o">.</span><span class="n">xml</span>  <span class="p">{</span> <span class="n">head</span> <span class="ss">:ok</span> <span class="p">}</span>
+      <span class="k">else</span>
+        <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">:action</span> <span class="o">=&gt;</span> <span class="s2">&quot;edit&quot;</span> <span class="p">}</span>
+        <span class="nb">format</span><span class="o">.</span><span class="n">xml</span>  <span class="p">{</span> <span class="n">render</span> <span class="ss">:xml</span> <span class="o">=&gt;</span> <span class="vi">@post</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> 
+                             <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="ss">:unprocessable_entity</span> <span class="p">}</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># DELETE /posts/1</span>
+  <span class="c1"># DELETE /posts/1.xml</span>
+  <span class="k">def</span> <span class="nf">destroy</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@post</span><span class="o">.</span><span class="n">destroy</span>
+
+    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">posts_url</span><span class="p">)</span> <span class="p">}</span>
+      <span class="nb">format</span><span class="o">.</span><span class="n">xml</span>  <span class="p">{</span> <span class="n">head</span> <span class="ss">:ok</span> <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p><a href="/index.html">Previous: Table of Contents</a><a href="/exposing.html">Next: Exposing</a></p>
+
+      
+      <div class="footer"></div>
+    </div>
+    
+    <a href="http://github.com/trek/exposure">
+      <img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+    </a>
+  </body>
+</html>

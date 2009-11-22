@@ -18,7 +18,7 @@ Action    | Success Response               | Failed Response
 
 Customized Responding
 ------------------
-Default responses can be customized with the ActionController method `response_for`. You can replace a response with a method name (as symbol), Proc object, or a block. You can respond differently to successful and unsuccessful execitions by passing the `:on` option with a value of either `:success` or `:failure`.
+Default responses can be customized with the ActionController class method `response_for`. You can replace a response with a method name (as symbol), Proc object, or a block. You can respond differently to successful and unsuccessful execution by passing the `:on` option with a value of either `:success` or `:failure`.
 
 {% highlight ruby %}
 class PostsController < ApplicationController
@@ -34,21 +34,39 @@ end
 {% highlight ruby %}
 class ProductsController < ApplicationController
   expose :products
-  builder_for :index, :is => Proc.new { render('scoped_index') }
+  response_for :index, :is => Proc.new { render('scoped_index') }
 end
 {% endhighlight %}
 
 {% highlight ruby %}
 class PuppiesController < ApplicationController
   expose :puppies
-  builder_for :new, :on => :success do
+  response_for :new, :on => :success do
     render('new_adoption_form')
   end
   
-  builder_for :new, :on => :failure do
+  response_for :new, :on => :failure do
     raise AdoptionNotAllowed
   end
 end
 {% endhighlight %}
 
-[Previous: Finding](/finding.html) [Next: Responding](/responding.html)
+Format-specific Responding
+------------------
+You can create responses for specific formats by passing `:format` option with an array of formats as symbols. The default option is `:html` only.
+
+{% highlight ruby %}
+class ProductsController < ApplicationController
+  # remember to add pdf as an acceptable mime-type in your configuration
+  # Mime::Type.register "application/pdf", :pdf
+  expose :products
+  response_for :show, :formats => :pdf do
+    send_data(MyCoolPDFWriter.generate(@product),
+            :filename => "#{@product.name}.pdf",
+            :type => "application/pdf")
+  end
+end
+{% endhighlight %}
+
+
+[Previous: Building](/building.html) [Next: Flashing](/flashing.html)
