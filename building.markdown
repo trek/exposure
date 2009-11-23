@@ -18,15 +18,53 @@ new `Post` objects in the `new` and `create` actions will be built with `Post.ne
 
 The following tables summarizes finding and variable assignment in resource controllers:  
 
-Action    | Builder called               | Assigned variables
-----------|------------------------------|--------------------
-`index`   |                              | `@resources`, `@posts`
-`show`    |                              | `@resource`, `@post`
-`new`     | `Post.new(params[:post])`    | `@resource`, `@post`
-`create`  | `Post.new(params[:post])`    | `@resource`, `@post`
-`edit`    |                              | `@resource`, `@post`
-`update`  |                              | `@resource`, `@post`
-`destroy` |                              | `@resource`, `@post`
+<table>
+<thead>
+<tr>
+<th align="center">Action    </th>
+<th align="center"> Builder called               </th>
+<th align="center"> Assigned variables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>index</code>   </td>
+<td align="center">                              </td>
+<td align="center"> <code>@resources</code>, <code>@posts</code></td>
+</tr>
+<tr>
+<td align="center"><code>show</code>    </td>
+<td align="center">                              </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+<tr>
+<td align="center"><code>new</code>     </td>
+<td align="center"> <code>Post.new(params[:post])</code>    </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+<tr>
+<td align="center"><code>create</code>  </td>
+<td align="center"> <code>Post.new(params[:post])</code>    </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+<tr>
+<td align="center"><code>edit</code>    </td>
+<td align="center">                              </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+<tr>
+<td align="center"><code>update</code>  </td>
+<td align="center">                              </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+<tr>
+<td align="center"><code>destroy</code> </td>
+<td align="center">                              </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+</tbody>
+</table>
+
 
 Customized Building
 ------------------

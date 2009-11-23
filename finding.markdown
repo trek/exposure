@@ -18,15 +18,54 @@ will find all members with `Member.all` and individual members with `Member.find
 
 The following tables summarizes finding and variable assignment in resource controllers:  
 
-Action | Finder called                | Assigned variables
--------|------------------------------|--------------------
-`index`| `Business.all`               | `@resources`, `@businesses`
-`show` | `Business.find(params[:id])` | `@resource`, `@business`
-`new`  |                              | `@resource`, `@business`
-`create` |                            | `@resource`, `@business`
-`edit` | `Business.find(params[:id])` | `@resource`, `@business`
-`update` | `Business.find(params[:id])` | `@resource`, `@business`
-`destroy`| `Business.find(params[:id])` | `@resource`, `@business`
+<table>
+<thead>
+<tr>
+<th>Action </th>
+<th> Finder called                </th>
+<th> Assigned variables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>index</code></td>
+<td> <code>Business.all</code>               </td>
+<td> <code>@resources</code>, <code>@businesses</code></td>
+</tr>
+<tr>
+<td><code>show</code> </td>
+<td> <code>Business.find(params[:id])</code> </td>
+<td> <code>@resource</code>, <code>@business</code></td>
+</tr>
+<tr>
+<td><code>new</code>  </td>
+<td>                              </td>
+<td> <code>@resource</code>, <code>@business</code></td>
+</tr>
+<tr>
+<td><code>create</code> </td>
+<td>                            </td>
+<td> <code>@resource</code>, <code>@business</code></td>
+</tr>
+<tr>
+<td><code>edit</code> </td>
+<td> <code>Business.find(params[:id])</code> </td>
+<td> <code>@resource</code>, <code>@business</code></td>
+</tr>
+<tr>
+<td><code>update</code> </td>
+<td> <code>Business.find(params[:id])</code> </td>
+<td> <code>@resource</code>, <code>@business</code></td>
+</tr>
+<tr>
+<td><code>destroy</code></td>
+<td> <code>Business.find(params[:id])</code> </td>
+<td> <code>@resource</code>, <code>@business</code></td>
+</tr>
+</tbody>
+</table>
+
+
 
 Customized Finding
 ------------------

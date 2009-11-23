@@ -7,16 +7,52 @@ Flashing
 ========
 Exposure includes a number of default flash message for successful object mutations (`create`, `update`, and `destroy`).  These are set to `flash[:notice]`. The following tables summarizes flash message defaults with an example resource type of `:pirates`:
 
-Action    | Success flash message          | Failed flash message
-----------|--------------------------------|--------------------
-`index`   |                                | 
-`show`    |                                | 
-`new`     |                                | 
-`create`  | Pirate successfully created    | 
-`edit`    |                                | 
-`update`  | Pirate successfully updated    | 
-`destroy` | Pirate successfully removed    | 
-
+<table>
+<thead>
+<tr>
+<th>Action    </th>
+<th> Success flash message          </th>
+<th> Failed flash message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>index</code>   </td>
+<td>                                </td>
+<td> </td>
+</tr>
+<tr>
+<td><code>show</code>    </td>
+<td>                                </td>
+<td> </td>
+</tr>
+<tr>
+<td><code>new</code>     </td>
+<td>                                </td>
+<td> </td>
+</tr>
+<tr>
+<td><code>create</code>  </td>
+<td> Pirate successfully created    </td>
+<td> </td>
+</tr>
+<tr>
+<td><code>edit</code>    </td>
+<td>                                </td>
+<td> </td>
+</tr>
+<tr>
+<td><code>update</code>  </td>
+<td> Pirate successfully updated    </td>
+<td> </td>
+</tr>
+<tr>
+<td><code>destroy</code> </td>
+<td> Pirate successfully removed    </td>
+<td> </td>
+</tr>
+</tbody>
+</table>
 Customized Flash Messages
 ------------------
 Default flash messages can be customized with the ActionController class method `flash_for`. You can replace a flash message with a method name (as symbol), `String`, `Proc` object, or a block. You can flash different messages for successful and unsuccessful execution by passing the `:on` option with a value of either `:success` or `:failure`.

@@ -6,15 +6,54 @@ title: Exposure responding
 Responding
 ========
 
-Action    | Success Response               | Failed Response
-----------|--------------------------------|--------------------
-`index`   | rendered `index`               | 404
-`show`    | rendered `show`                | 404
-`new`     | rendered `new`                 | 404
-`create`  | redirect `show` of new object  | rendered `new`
-`edit`    | rendered `edit`                | 404
-`update`  | redirect `show` of object      | rendered `edit`
-`destroy` | rendered `index`               | 
+<table>
+<thead>
+<tr>
+<th>Action    </th>
+<th> Success Response               </th>
+<th> Failed Response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>index</code>   </td>
+<td> rendered <code>index</code>               </td>
+<td> 404</td>
+</tr>
+<tr>
+<td><code>show</code>    </td>
+<td> rendered <code>show</code>                </td>
+<td> 404</td>
+</tr>
+<tr>
+<td><code>new</code>     </td>
+<td> rendered <code>new</code>                 </td>
+<td> 404</td>
+</tr>
+<tr>
+<td><code>create</code>  </td>
+<td> redirect <code>show</code> of new object  </td>
+<td> rendered <code>new</code></td>
+</tr>
+<tr>
+<td><code>edit</code>    </td>
+<td> rendered <code>edit</code>                </td>
+<td> 404</td>
+</tr>
+<tr>
+<td><code>update</code>  </td>
+<td> redirect <code>show</code> of object      </td>
+<td> rendered <code>edit</code></td>
+</tr>
+<tr>
+<td><code>destroy</code> </td>
+<td> rendered <code>index</code>               </td>
+<td> </td>
+</tr>
+</tbody>
+</table>
+
+
 
 Customized Responding
 ------------------
