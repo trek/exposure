@@ -1,5 +1,11 @@
 ---
 layout: default
+
+next_url:  flashing
+next_text: Flashing
+previous_url: building
+previous_text: Building
+
 title: Exposure responding
 ---
 
@@ -106,6 +112,3 @@ class ProductsController < ApplicationController
   end
 end
 {% endhighlight %}
-
-
-[Previous: Building](/building.html) [Next: Flashing](/flashing.html)

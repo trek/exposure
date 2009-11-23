@@ -1,7 +1,14 @@
 ---
 layout: default
+
+next_url:  rest-pattern
+next_text: The Rails REST Pattern
+
 title: Exposure
 ---
+
+# {{page.title}}
+
 
 Installing
 ------------

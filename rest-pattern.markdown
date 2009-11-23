@@ -1,5 +1,11 @@
 ---
 layout: default
+
+next_url:  exposing
+next_text: Exposing
+previous_url: index
+previous_text: Table of Contents
+
 title: Exposure REST Pattern
 ---
 
@@ -98,6 +104,3 @@ class PostsController < ApplicationController
 end
 
 {% endhighlight %}
-
-
-[Previous: Table of Contents](/index.html)[Next: Exposing](/exposing.html)

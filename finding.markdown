@@ -1,5 +1,11 @@
 ---
 layout: default
+
+next_url:  building
+next_text: Building
+previous_url: exposing
+previous_text: Exposing Resources
+
 title: Exposure finding
 ---
 
@@ -96,7 +102,4 @@ class PuppiesController < ApplicationController
     Puppy.find_by_name_and_breed(params[:name], params[:breed_id])
   end
 end
-{% endhighlight %}
-
-[Previous: Exposing Resources](exposing.html) [Next: Building](building.html)
-  
+{% endhighlight %}  

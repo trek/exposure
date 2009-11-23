@@ -15,6 +15,17 @@
       
       {{ content }}
       
+      {% if page.previous_url %}
+        <span class='previous'>
+          &#x261c; <a href='{{ page.previous_url }}.html'>{{ page.previous_text }}</a>
+        </span>
+      {% endif %}
+      
+      {% if page.next_url %}
+        <span class='next'>
+          <a href='{{ page.next_url }}.html'>{{ page.next_text }}</a> &#x261E;
+        </span>
+      {% endif %}
       <div class="footer"></div>
     </div>
     

@@ -1,5 +1,11 @@
 ---
 layout: default
+
+next_url:  callbacks
+next_text: Callbacks
+previous_url: responding
+previous_text: Responding
+
 title: Exposure flashing
 ---
 
@@ -87,5 +93,3 @@ class PuppiesController < ApplicationController
   end
 end
 {% endhighlight %}
-
-[Previous: Responding](/responding.html) [Next: Callbacks](/callbacks.html)

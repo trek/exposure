@@ -1,5 +1,11 @@
 ---
 layout: default
+
+next_url:  responding
+next_text: Responding
+previous_url: finding
+previous_text: Finding
+
 title: Exposure building
 ---
 
@@ -96,5 +102,3 @@ class PuppiesController < ApplicationController
   end
 end
 {% endhighlight %}
-
-[Previous: Finding](/finding.html) [Next: Responding](/responding.html)
