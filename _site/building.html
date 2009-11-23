@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+     <title>Exposure building</title>
+     <meta name="author" content="Trek glowakcki" />
+     <!-- syntax highlighting CSS -->
+     <link rel="stylesheet" href="css/syntax.css" type="text/css" />
+     <!-- Homepage CSS -->
+     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen, projection" />
+  </head>
+  <body>
+    
+    <div class="container">
+      
+      <h1>Building</h1>
+
+<p>In the <a href="/finding.html">previous chapter</a> we learned about <code>exposure</code>'s finding capabilities. Some actions (e.g. <code>new</code> and <code>create</code>) don't manage existing resources. Instead, they build new resources from parameterized data. The default building strategy is to call the resource's parent class with <code>new</code>, passing in parameters named for the resource's singular name. With the following code example</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">PostsController</span>
+  <span class="n">expose</span> <span class="ss">:posts</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>new <code>Post</code> objects in the <code>new</code> and <code>create</code> actions will be built with <code>Post.new(params[:post])</code> and stored in the variable names <code>@resource</code> and <code>@post</code>.</p>
+
+<p>The following tables summarizes finding and variable assignment in resource controllers:<br/>
+</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">Action    </th>
+<th align="center"> Builder called               </th>
+<th align="center"> Assigned variables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>index</code>   </td>
+<td align="center">                              </td>
+<td align="center"> <code>@resources</code>, <code>@posts</code></td>
+</tr>
+<tr>
+<td align="center"><code>show</code>    </td>
+<td align="center">                              </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+<tr>
+<td align="center"><code>new</code>     </td>
+<td align="center"> <code>Post.new(params[:post])</code>    </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+<tr>
+<td align="center"><code>create</code>  </td>
+<td align="center"> <code>Post.new(params[:post])</code>    </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+<tr>
+<td align="center"><code>edit</code>    </td>
+<td align="center">                              </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+<tr>
+<td align="center"><code>update</code>  </td>
+<td align="center">                              </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+<tr>
+<td align="center"><code>destroy</code> </td>
+<td align="center">                              </td>
+<td align="center"> <code>@resource</code>, <code>@post</code></td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>Customized Building</h2>
+
+<p>Default building can be customized with the ActionController method <code>builder_for</code>. You can replace a builder with a method name (as symbol), Proc object, or a block.  The result of execution will be stored in the resource's variable name</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">expose</span> <span class="ss">:posts</span>
+  <span class="n">builder_for</span> <span class="ss">:post</span><span class="p">,</span> <span class="ss">:is</span> <span class="o">=&gt;</span> <span class="ss">:new_post</span>
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">new_post</span>
+      <span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:post_data</span><span class="o">]</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">ProductsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">expose</span> <span class="ss">:products</span>
+  <span class="n">builder_for</span> <span class="ss">:product</span><span class="p">,</span> <span class="ss">:is</span> <span class="o">=&gt;</span> <span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="no">Product</span><span class="o">.</span><span class="n">clone!</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:old_product_id</span><span class="o">]</span><span class="p">)</span>  <span class="p">}</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">PuppiesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">expose</span> <span class="ss">:puppies</span>
+  <span class="n">builder_for</span> <span class="ss">:puppy</span> <span class="k">do</span>
+    <span class="no">Puppy</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:puppy</span><span class="o">].</span><span class="n">merge</span><span class="p">({</span><span class="ss">:adopted</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">}))</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p><a href="/finding.html">Previous: Finding</a> <a href="/responding.html">Next: Responding</a></p>
+
+      
+      <div class="footer"></div>
+    </div>
+    
+    <a href="http://github.com/trek/exposure">
+      <img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+    </a>
+  </body>
+</html>

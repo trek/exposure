@@ -19,7 +19,7 @@ new `Post` objects in the `new` and `create` actions will be built with `Post.ne
 The following tables summarizes finding and variable assignment in resource controllers:  
 
 Action    | Builder called               | Assigned variables
-:--------:|:----------------------------:|:------------------:
+----------|------------------------------|--------------------
 `index`   |                              | `@resources`, `@posts`
 `show`    |                              | `@resource`, `@post`
 `new`     | `Post.new(params[:post])`    | `@resource`, `@post`
