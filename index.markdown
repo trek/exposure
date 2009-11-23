@@ -25,24 +25,23 @@ Adding to your Rails project
     
 Using
 ----------------
-    
-   1. [The REST pattern](rest-pattern.html)
    
-   Wherein the default REST pattern of interaction is explained.
-   
-   2. [Exposing Resources](exposing.html)
-   
-   Resources are exposed, customization is explored, puppies are saved.
-   
-   3. [Finding](finding.html)
-   
-   Resources are found, objects assigned.
-   
-   4. [Building](building.html)
-   
-   New resources are made.
-   
-   5. [Responding](responding.html)
-   6. [Flashing](flashing.html)
-   7. [Callbacks](callbacks.html)
+<ol>
+<li><p><a href="rest-pattern.html">The REST pattern</a></p>
+
+<p>Wherein the default REST pattern of interaction is explained.</p></li>
+<li><p><a href="exposing.html">Exposing Resources</a></p>
+
+<p>Resources are exposed, customization is explored, puppies are saved.</p></li>
+<li><p><a href="finding.html">Finding</a></p>
+
+<p>Resources are found, objects assigned.</p></li>
+<li><p><a href="building.html">Building</a></p>
+
+<p>New resources are made.</p></li>
+<li><p><a href="responding.html">Responding</a></p></li>
+<li><a href="flashing.html">Flashing</a></li>
+<li><a href="callbacks.html">Callbacks</a></li>
+</ol>
+
   
