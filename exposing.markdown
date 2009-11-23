@@ -28,10 +28,24 @@ class PostsController
 end
 {% endhighlight %}
 
-## Limit formats a resource
+## Limit formats for a resource
 
 {% highlight ruby %}
 class PostsController
-  expose :posts, :only => [:html]
+  expose :posts, :formats => [:html]
+end
+{% endhighlight %}
+
+## Skip some actions 
+
+{% highlight ruby %}
+class PostsController
+  expose :posts, :only => [:index, :show]
+end
+{% endhighlight %}
+
+{% highlight ruby %}
+class PostsController
+  expose :posts, :except => [:destroy, :show]
 end
 {% endhighlight %}

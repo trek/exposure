@@ -33,10 +33,28 @@
 </div>
 
 
-<h2>Limit formats a resource</h2>
+<h2>Limit formats for a resource</h2>
 
 <div class="highlight"><pre><span class="k">class</span> <span class="nc">PostsController</span>
-  <span class="n">expose</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">:only</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:html</span><span class="o">]</span>
+  <span class="n">expose</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">:formats</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:html</span><span class="o">]</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h2>Skip some actions</h2>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">PostsController</span>
+  <span class="n">expose</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">:only</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:show</span><span class="o">]</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">PostsController</span>
+  <span class="n">expose</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">:except</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:destroy</span><span class="p">,</span> <span class="ss">:show</span><span class="o">]</span>
 <span class="k">end</span>
 </pre>
 </div>
