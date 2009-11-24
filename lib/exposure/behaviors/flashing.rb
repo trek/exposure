@@ -36,11 +36,11 @@ module Exposure
           if flash_message = self.class::FlashMessages["#{action_name}.#{action_status}.html"]
             case flash_message
             when String
-              flash[:message] = flash_message
+              flash[:notice] = flash_message
             when Symbol
-              flash[:message] = self.send(flash_message)
+              flash[:notice] = self.send(flash_message)
             when Proc
-              flash[:message] = self.instance_eval(&flash_message)
+              flash[:notice] = self.instance_eval(&flash_message)
             end
           else
             false
@@ -49,7 +49,7 @@ module Exposure
         
         def default_flash_for(action_name, action_status)
           if message_proc = self.class::DefaultFlashMessages["#{action_name}.#{action_status}.html"]
-            flash[:message] = self.instance_eval(&message_proc)
+            flash[:notice] = self.instance_eval(&message_proc)
           end
         end
         
