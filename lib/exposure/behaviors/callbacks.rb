@@ -32,14 +32,14 @@ module Exposure
         
         options[:if] ||= []
         
-        only_methods = options.delete(:only)
-        except_methods = options.delete(:except)
+        only_methods = Array.wrap(options.delete(:only))
+        except_methods = Array.wrap(options.delete(:except))
         
-        if only_methods
+        if only_methods.any?
           options[:if] << Proc.new {|c| only_methods.include?(c.action_name.intern) }
         end
         
-        if except_methods
+        if except_methods.any?
           options[:if] << Proc.new {|c| !except_methods.include?(c.action_name.intern) }
         end
         

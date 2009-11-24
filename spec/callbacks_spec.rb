@@ -43,4 +43,18 @@ describe "callbacks'", :type => :controller do
     get(:new)
     should assign_to(:callback_called).with(3)  
   end
+  
+  it "can call callbacks for specific formats as an array" do
+    PiratesController.after :assign, :first_callback_called, :second_callback_called, :only => [:create, :new]
+    PiratesController.after :assign, :third_callback_called, :except => [:new]
+    get(:new)
+    should assign_to(:callback_called).with(2)
+  end
+  
+  it "can call callbacks for a specific format as symbol" do
+    PiratesController.after :assign, :first_callback_called, :second_callback_called, :only => :new
+    PiratesController.after :assign, :third_callback_called, :except => :new
+    get(:new)
+    should assign_to(:callback_called).with(2)
+  end
 end
