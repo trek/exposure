@@ -2,7 +2,7 @@ module Exposure
   module Callbacks
     def self.included(base)
       base.extend ClassMethods
-      base.send(:include, InstaneMethods)
+      base.send(:include, InstanceMethods)
     end
     
     module ClassMethods
@@ -47,7 +47,7 @@ module Exposure
       end
     end
     
-    module InstaneMethods
+    module InstanceMethods
     end
   end
 end

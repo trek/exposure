@@ -2,7 +2,7 @@ module Exposure
   module Flashing
     def self.included(base)
       base.extend ClassMethods
-      base.send(:include, InstaneMethods)
+      base.send(:include, InstanceMethods)
     end
     
     module ClassMethods
@@ -30,7 +30,7 @@ module Exposure
       end
     end
     
-    module InstaneMethods
+    module InstanceMethods
       private
         def custom_flash_for(action_name, action_status)
           if flash_message = self.class::FlashMessages["#{action_name}.#{action_status}.html"]

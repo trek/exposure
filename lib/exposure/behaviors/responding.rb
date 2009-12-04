@@ -2,7 +2,7 @@ module Exposure
   module Responding
     def self.included(base)
       base.extend ClassMethods
-      base.send(:include, InstaneMethods)
+      base.send(:include, InstanceMethods)
     end
     
     module ClassMethods
@@ -48,7 +48,7 @@ module Exposure
       end
     end
     
-    module InstaneMethods
+    module InstanceMethods
       private
         def custom_response_for(action_name, action_status, format)
           if responder = self.class::Responses["#{action_name}.#{action_status}.#{format}"]

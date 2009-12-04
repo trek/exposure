@@ -2,7 +2,7 @@ module Exposure
   module Finding
     def self.included(base)
       base.extend ClassMethods
-      base.send(:include, InstaneMethods)
+      base.send(:include, InstanceMethods)
     end
     
     module ClassMethods
@@ -60,7 +60,7 @@ module Exposure
       end
     end
     
-    module InstaneMethods
+    module InstanceMethods
       private
         def custom_finder_for(resource_name)
           if finder = self.class::Finders[resource_name]
