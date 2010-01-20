@@ -10,7 +10,7 @@ describe "flash messages with procs", :type => :controller do
   setup.call
   
   def setup_flasher(action, success = nil)
-    PiratesController.flash_for :create, :is => Proc.new { 'the flash was set' }, :on => success
+    PiratesController.flash_for :create, :is => proc { 'the flash was set' }, :on => success
   end
   
   ActionController::Routing::Routes.draw do |map| 

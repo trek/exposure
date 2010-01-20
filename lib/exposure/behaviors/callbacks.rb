@@ -36,11 +36,11 @@ module Exposure
         except_methods = Array.wrap(options.delete(:except))
         
         if only_methods.any?
-          options[:if] << Proc.new {|c| only_methods.include?(c.action_name.intern) }
+          options[:if] << proc {|c| only_methods.include?(c.action_name.intern) }
         end
         
         if except_methods.any?
-          options[:if] << Proc.new {|c| !except_methods.include?(c.action_name.intern) }
+          options[:if] << proc {|c| !except_methods.include?(c.action_name.intern) }
         end
         
         self.send(callback_name, action, options)

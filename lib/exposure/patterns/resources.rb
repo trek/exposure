@@ -24,29 +24,29 @@ module Exposure
       )
       
       DefaultFlashMessages = {
-        'create.success.html' => Proc.new { "#{resource_name.capitalize} successfully created" },
-        'update.success.html' => Proc.new { "#{resource_name.capitalize} successfully updated" },
-        'destroy.success.html' => Proc.new { "#{resource_name.capitalize} successfully removed" }
+        'create.success.html' => proc { "#{resource_name.capitalize} successfully created" },
+        'update.success.html' => proc { "#{resource_name.capitalize} successfully updated" },
+        'destroy.success.html' => proc { "#{resource_name.capitalize} successfully removed" }
       }
       
       DefaultResponses = {
-        'index.success.html'  => Proc.new   { render('index') },
-        'show.success.html'   => Proc.new   { render('show')  },
-        'new.success.html'    => Proc.new   { render('new')   },
-        'create.success.html' => Proc.new  { redirect_to({:action => 'index'}) },
-        'edit.success.html'   => Proc.new  { render('edit')  },
-        'update.success.html' => Proc.new  { redirect_to({:action => 'show' }) },
-        'destroy.success.html'=> Proc.new { redirect_to({:action => 'index'}) },
-        'create.failure.html' => Proc.new { render('new')    },
-        'update.failure.html' => Proc.new { render('edit')   },
-        'index.success.xml'   => Proc.new { render(:xml => @resources) },
-        'show.success.xml'   => Proc.new  { render(:xml => @resource) },
-        'new.success.xml'    => Proc.new  { render(:xml => @resource) },
-        'create.success.xml' => Proc.new  { render({:xml => @resource, :status => :created, :location => @resource}) },
-        'created.failure.xml'=> Proc.new  { render(:xml => @resource.errors, :status => :unprocessable_entity)},
-        'update.success.xml' => Proc.new  { head(:ok)},
-        'update.failure.xml' => Proc.new  { render(:xml => @resource.errors, :status => :unprocessable_entity)},
-        'destroy.success.xml'=> Proc.new  { head(:ok)}
+        'index.success.html'  => proc   { render('index') },
+        'show.success.html'   => proc   { render('show')  },
+        'new.success.html'    => proc   { render('new')   },
+        'create.success.html' => proc  { redirect_to({:action => 'index'}) },
+        'edit.success.html'   => proc  { render('edit')  },
+        'update.success.html' => proc  { redirect_to({:action => 'show' }) },
+        'destroy.success.html'=> proc { redirect_to({:action => 'index'}) },
+        'create.failure.html' => proc { render('new')    },
+        'update.failure.html' => proc { render('edit')   },
+        'index.success.xml'   => proc { render(:xml => @resources) },
+        'show.success.xml'   => proc  { render(:xml => @resource) },
+        'new.success.xml'    => proc  { render(:xml => @resource) },
+        'create.success.xml' => proc  { render({:xml => @resource, :status => :created, :location => @resource}) },
+        'created.failure.xml'=> proc  { render(:xml => @resource.errors, :status => :unprocessable_entity)},
+        'update.success.xml' => proc  { head(:ok)},
+        'update.failure.xml' => proc  { render(:xml => @resource.errors, :status => :unprocessable_entity)},
+        'destroy.success.xml'=> proc  { head(:ok)}
       }
 
       module Actions

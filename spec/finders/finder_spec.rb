@@ -34,7 +34,7 @@ describe "finders", :type => :controller do
   end
   
   it "finds with a method name as symbol" do
-    PiratesController.find :pirate, :with => Proc.new { Pirate.find_by_title(params[:id]) }
+    PiratesController.find :pirate, :with => proc { Pirate.find_by_title(params[:id]) }
     get(:show, {:id => 'Captain'})
     
     should assign_to(:pirate).with(@pirate)

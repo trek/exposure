@@ -20,11 +20,11 @@ module Exposure
       def build_default_builder(member, nesting)
         if nesting.any?
           builders = self::const_set(:DefaultBuilders, {
-            self.resource_name.intern  => Proc.new { [:build, params[resource_name] ] },
+            self.resource_name.intern  => proc { [:build, params[resource_name] ] },
           })
         else
           self::const_set(:DefaultBuilders, {
-            self.resource_name.intern  => Proc.new { [:new, params[resource_name] ] },
+            self.resource_name.intern  => proc { [:new, params[resource_name] ] },
           })
         end
       end

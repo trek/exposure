@@ -14,7 +14,7 @@ describe "responders", :type => :controller do
    end
    
    def setup_responder(action, success = nil)
-     PiratesController.response_for :create, :is => Proc.new { redirect_to({:action => "test"}) }, :on => success
+     PiratesController.response_for :create, :is => proc { redirect_to({:action => "test"}) }, :on => success
    end
    
   controller_name :pirates

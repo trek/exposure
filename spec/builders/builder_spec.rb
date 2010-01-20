@@ -34,7 +34,7 @@ describe "builders", :type => :controller do
   end
   
   it "builds with a proc" do
-    PiratesController.build :pirate, :with => Proc.new { Pirate.new(params[:pirate]) }
+    PiratesController.build :pirate, :with => proc { Pirate.new(params[:pirate]) }
     post(:create, {:pirate => {}}).inspect
     
     should assign_to(:pirate).with(@pirate)

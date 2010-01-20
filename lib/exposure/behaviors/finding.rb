@@ -6,8 +6,8 @@ module Exposure
     end
     
     module ClassMethods
-      # find :person, :with => Proc.new { Person.find_by_permalink(params[:permalink]) }
-      # find :people, :with => Proc.new { Person.send(params[:scope]) }
+      # find :person, :with => proc { Person.find_by_permalink(params[:permalink]) }
+      # find :people, :with => proc { Person.send(params[:scope]) }
       # find :dogs, :with => :dogs_adopted_after_date
       # find :dogs do
       #   Dog.all
@@ -49,13 +49,13 @@ module Exposure
       
       def build_default_finders(member, nesting) #:nodoc:
         finders = self::const_set(:DefaultFinders, {
-          self.resource_name.intern  => Proc.new { [:find, params[:id] ] },
-          self.resources_name.intern => Proc.new { [:all] }
+          self.resource_name.intern  => proc { [:find, params[:id] ] },
+          self.resources_name.intern => proc { [:all] }
         })
 
         nesting.each do |association_name|
-          finders[association_name.to_s.singularize.to_sym] = Proc.new { [:find, params[:"#{association_name.to_s.singularize}_id"]] }
-          finders[association_name] = Proc.new { [ :all ] }
+          finders[association_name.to_s.singularize.to_sym] = proc { [:find, params[:"#{association_name.to_s.singularize}_id"]] }
+          finders[association_name] = proc { [ :all ] }
         end
       end
     end
