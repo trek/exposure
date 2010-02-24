@@ -75,12 +75,12 @@ The following tables summarizes finding and variable assignment in resource cont
 
 Customized Finding
 ------------------
-Default finding can be customized with the ActionController method `finder_for`. You can replace a finder with a method name (as symbol), Proc object, or a block.  The result of execution will be stored in the resource's variable name
+Default finding can be customized with the ActionController method `find`. You can replace a finder with a method name (as symbol), Proc object, or a block.  The result of execution will be stored in the resource's variable name
 
 {% highlight ruby %}
 class PostsController < ApplicationController
   expose :posts
-  finder_for :post, :is => :current_post
+  find :post, :with => :current_post
   private
     def current_post
       Post.find_by_permalink(params[:permalink])
@@ -91,15 +91,15 @@ end
 {% highlight ruby %}
 class ProductsController < ApplicationController
   expose :products
-  finder_for :products, :is => Proc.new { Product.top_sellers  }
+  find :products, :with => Proc.new { Product.top_sellers  }
 end
 {% endhighlight %}
 
 {% highlight ruby %}
 class PuppiesController < ApplicationController
   expose :puppies
-  finder_for :puppy do
+  find :puppy do
     Puppy.find_by_name_and_breed(params[:name], params[:breed_id])
   end
 end
-{% endhighlight %}  
+{% endhighlight %}
