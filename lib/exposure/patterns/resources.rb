@@ -50,9 +50,9 @@ module Exposure
       }
 
       module Actions
-        def index
+        def index          
           run_callbacks(:before_find_many)
-           if find_records
+           if find_records             
              run_callbacks(:after_find_many_on_success)
              run_callbacks(:after_find_many)
              run_callbacks(:before_response)
@@ -216,7 +216,7 @@ module Exposure
             @resource = instance_variable_set("@#{resource_name}", call_finder_chain(parent_model, self.class.member_nesting, false))
           end
           
-          def find_records      
+          def find_records        
             @resources = instance_variable_set("@#{resources_name}", call_finder_chain(parent_model, self.class.collection_nesting, false))
           end
           

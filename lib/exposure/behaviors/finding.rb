@@ -99,6 +99,7 @@ module Exposure
             if use_associaiton
               call_finder_chain(object.send(association).send(*value), chain)
             else
+              return value if value.empty? || value[0].kind_of?(ActiveRecord::Base) # the find already executed
               call_finder_chain(object.send(*value), chain)
             end
           else
