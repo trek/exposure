@@ -8,7 +8,7 @@ module Exposure
     # :except => array of REST methods to exclude
     #   defaults to [ ]
     # :formats => array of 
-    #   defaults to [ :html, :xml]
+    #   defaults to [ :html, :xml ]
     # 
     def expose_many(name, options = {})
       @_exposed_resource_name = name

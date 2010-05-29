@@ -26,7 +26,7 @@ module Exposure
       def response_for(*actions, &block)
         options = actions.extract_options!
         options[:is] ||= block
-        formats  = options[:formats] || [:html]
+        formats  = options[:formats] || [:html, :xml, :json]
         
         case options[:on]
         when NilClass, :any

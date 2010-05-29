@@ -39,6 +39,7 @@ module Exposure
         'destroy.success.html'=> proc { redirect_to({:action => 'index'}) },
         'create.failure.html' => proc { render('new')    },
         'update.failure.html' => proc { render('edit')   },
+        
         'index.success.xml'   => proc { render(:xml => @resources) },
         'show.success.xml'   => proc  { render(:xml => @resource) },
         'new.success.xml'    => proc  { render(:xml => @resource) },
@@ -46,7 +47,17 @@ module Exposure
         'created.failure.xml'=> proc  { render(:xml => @resource.errors, :status => :unprocessable_entity)},
         'update.success.xml' => proc  { head(:ok)},
         'update.failure.xml' => proc  { render(:xml => @resource.errors, :status => :unprocessable_entity)},
-        'destroy.success.xml'=> proc  { head(:ok)}
+        'destroy.success.xml'=> proc  { head(:ok)},
+        
+        'index.success.json'   => proc { render(:json => @resources) },
+        'show.success.json'   => proc  { render(:json => @resource) },
+        'new.success.json'    => proc  { render(:json => @resource) },
+        'create.success.json' => proc  { render({:json => @resource, :status => :created, :location => @resource}) },
+        'created.failure.json'=> proc  { render(:json => @resource.errors, :status => :unprocessable_entity)},
+        'update.success.json' => proc  { render(:json => @resource)},
+        'update.failure.json' => proc  { render(:json => @resource.errors, :status => :unprocessable_entity)},
+        'destroy.success.json'=> proc  { render(:json => @resource)}
+        
       }
 
       module Actions
