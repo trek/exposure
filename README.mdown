@@ -1,13 +1,16 @@
-# exposure
+# Deprecation Notice
+Please use [Rails 3's new Responder syntax](http://railscasts.com/episodes/224-controllers-in-rails-3). I do.
+
+## exposure
 Exposure is a Rails is a controller abstraction layer like [`resource_this`](http://github.com/jnewland/resource_this), [`make_resourceful`](http://github.com/hcatlin/make_resourceful) and [`resource_controller`](resource_controller) with the same goal: exposing resources at the controller level with fewer headaches.
 
     class PostsController < ApplicationController
       expose :posts
     end
 
-## Customization:
+### Customization:
 Exposure has a number of customization points:
-### Callbacks
+#### Callbacks
 Exposure uses `ActiveSupport`'s callback system and has the following callbacks:
 
   * `before_find`
@@ -52,9 +55,9 @@ or through a specialty syntax
         end
     end
 
-### Finders
-### Flashers
-### Responders
+#### Finders
+#### Flashers
+#### Responders
 
 INSTALL:
 ------
